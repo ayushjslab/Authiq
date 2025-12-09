@@ -1,18 +1,19 @@
-"use client"
-
-import { useSession } from "next-auth/react"
+'use client'
 
 export default function Profile() {
-  const { data: session, status } = useSession()
+  const handleGitHubLogin = () => {
+    window.open('/api/providers/github', '_self'); // redirects to GitHub login
+  }
 
-  if (status === "loading") return <p>Loading...</p>
-  if (!session) return <p>Not logged in</p>
+  const handleGoogleLogin = () => {
+    window.open('/api/providers/google', '_self'); // redirects to Google login
+  }
 
   return (
     <div>
-      <h2>Hello {session.user?.name}</h2>
-      <p>{session.user?.email}</p>
-      <img src={session.user?.image || ""} width={50} />
+      <h1>Login</h1>
+      <button onClick={handleGoogleLogin}>Sign in with Google</button>
+      <button onClick={handleGitHubLogin}>Sign in with GitHub</button>
     </div>
   )
 }
