@@ -3,6 +3,8 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Zap, ShieldCheck } from "lucide-react";
+import { getUserFromJWT } from "@/hooks/getUser";
+import { useEffect } from "react";
 
 export default function Hero() {
   const containerVariants = {

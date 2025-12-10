@@ -17,7 +17,7 @@ export default function ProfileButton() {
   }
   const {user} = session
 
-  console.log(user.image)
+  console.log(user)
 
   const handleLogout = async () => {
     try {

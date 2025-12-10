@@ -8,11 +8,12 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import ProfileButton from "@/components/shared/profile-button";
 import { useSession } from "next-auth/react";
+import axios from "axios";
 
 export default function Navbar() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   const navItems = [
     { label: "How It Works", href: "#how-it-works" },
@@ -22,7 +23,18 @@ export default function Navbar() {
     { label: "Docs", href: "/docs" },
   ];
 
-  useEffect(() => {}, [session]);
+  useEffect(() => {
+    if (status !== "authenticated") return;
+    async function setCookie () {
+      try {
+        const res = await axios.post(`/api/set-cookies`, {email: session?.user?.email})
+        console.log(res.data)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    setCookie();
+  }, [session]);
 
   return (
     <motion.nav

@@ -10,6 +10,8 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { name, userId, websiteUrl } = body;
 
+    console.log(name, userId, websiteUrl)
+
     if (!name || !userId || !websiteUrl) {
       return NextResponse.json(
         { error: "Missing required fields" },
@@ -25,6 +27,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(
       {
+        success: true,
         message: "Website created successfully",
         website: newWebsite,
       },
