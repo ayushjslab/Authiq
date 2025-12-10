@@ -4,12 +4,15 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ShieldHalf, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import ProfileButton from "@/components/shared/profile-button";
+import { useSession } from "next-auth/react";
 
 export default function Navbar() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const { data: session } = useSession();
 
   const navItems = [
     { label: "How It Works", href: "#how-it-works" },
@@ -19,12 +22,14 @@ export default function Navbar() {
     { label: "Docs", href: "/docs" },
   ];
 
+  useEffect(() => {}, [session]);
+
   return (
     <motion.nav
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="sticky top-0 z-50 backdrop-blur-xl bg-black/60 border-b border-white/10 shadow-[0_0_25px_rgba(220,38,38,0.25)]"
+      className="sticky top-0 z-50 backdrop-blur-xl bg-transparent"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
         {/* Logo */}
@@ -64,13 +69,17 @@ export default function Navbar() {
           transition={{ delay: 0.4 }}
           className="hidden md:block"
         >
-          <Button
-            variant="outline"
-            onClick={() => router.push("/login")}
-            className="border-primary text-primary hover:bg-primary/10 backdrop-blur-xl"
-          >
-            Sign In
-          </Button>
+          {session && session.user ? (
+            <ProfileButton />
+          ) : (
+            <Button
+              variant="outline"
+              onClick={() => router.push("/login")}
+              className="border-primary text-primary hover:bg-primary/10 backdrop-blur-xl"
+            >
+              Sign In
+            </Button>
+          )}
         </motion.div>
 
         {/* Mobile Menu Button */}
@@ -78,16 +87,22 @@ export default function Navbar() {
           onClick={() => setOpen(!open)}
           className="md:hidden p-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition"
         >
-          {open ? <X size={22} className="text-white" /> : <Menu size={22} className="text-white" />}
+          {open ? (
+            <X size={22} className="text-white" />
+          ) : (
+            <Menu size={22} className="text-white" />
+          )}
         </button>
       </div>
 
       {/* Mobile Menu Drawer */}
       <motion.div
         initial={{ height: 0, opacity: 0 }}
-        animate={open ? { height: "auto", opacity: 1 } : { height: 0, opacity: 0 }}
+        animate={
+          open ? { height: "auto", opacity: 1 } : { height: 0, opacity: 0 }
+        }
         transition={{ duration: 0.3 }}
-        className="md:hidden overflow-hidden bg-black/80 backdrop-blur-xl border-t border-white/10"
+        className="md:hidden bg-black/80 backdrop-blur-xl border-t border-white/10"
       >
         <div className="px-6 py-4 flex flex-col gap-4">
           {navItems.map((item) => (
@@ -100,17 +115,17 @@ export default function Navbar() {
               {item.label}
             </Link>
           ))}
-
-          <Button
-            variant="outline"
-            onClick={() => {
-              setOpen(false);
-              router.push("/login");
-            }}
-            className="border-primary text-primary hover:bg-primary/10 backdrop-blur-xl mt-2"
-          >
-            Sign In
-          </Button>
+          {session && session.user ? (
+            <ProfileButton />
+          ) : (
+            <Button
+              variant="outline"
+              onClick={() => router.push("/login")}
+              className="border-primary text-primary hover:bg-primary/10 backdrop-blur-xl w-full"
+            >
+              Sign In
+            </Button>
+          )}
         </div>
       </motion.div>
     </motion.nav>

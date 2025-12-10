@@ -60,7 +60,7 @@ export default function HowToUse() {
         >
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground">
             How to Use{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Authiq</span>
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Authiq</span>
           </h2>
           <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto">
             Four simple steps to add enterprise-grade authentication to your application.
@@ -106,13 +106,13 @@ export default function HowToUse() {
                   <p className="text-muted-foreground text-sm leading-relaxed">{step.description}</p>
 
                   {/* Hover effect background */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                  <div className="absolute inset-0 bg-linear-to-r from-primary/5 to-secondary/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                 </div>
 
                 {/* Connection line */}
                 {idx < steps.length - 1 && (
                   <motion.div
-                    className="hidden lg:block absolute top-1/2 -right-3 w-6 h-0.5 bg-gradient-to-r from-primary to-transparent"
+                    className="hidden lg:block absolute top-1/2 -right-3 w-6 h-0.5 bg-linear-to-r from-primary to-transparent"
                     initial={{ scaleX: 0 }}
                     whileInView={{ scaleX: 1 }}
                     viewport={{ once: true }}

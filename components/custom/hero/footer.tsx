@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion"
 import Link from "next/link"
-import { Lock, Mail, Github, Linkedin, Twitter } from "lucide-react"
+import { Mail, Github, Linkedin, Twitter, ShieldHalf } from "lucide-react"
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
@@ -56,7 +56,7 @@ export default function Footer() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mb-16 p-8 sm:p-12 rounded-2xl bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20"
+          className="mb-16 p-8 sm:p-12 rounded-2xl bg-linear-to-r from-primary/10 to-secondary/10 border border-primary/20"
         >
           <h3 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">Ready to simplify authentication?</h3>
           <p className="text-muted-foreground mb-6 text-lg">
@@ -82,7 +82,7 @@ export default function Footer() {
           >
             <Link href="/" className="flex items-center gap-2 mb-4">
               <div className="bg-primary p-2 rounded-lg">
-                <Lock className="text-primary-foreground" size={20} />
+                <ShieldHalf className="text-primary-foreground" size={20} />
               </div>
               <span className="font-bold text-lg text-foreground">Authiq</span>
             </Link>

@@ -26,7 +26,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden pt-24">
+    <section className="relative min-h-screen flex items-center overflow-hidden pt-20">
       {/* Soft background glow */}
       <div className="absolute inset-0 blur-[160px] opacity-30">
         <div className="absolute top-10 left-20 w-96 h-96 bg-primary/30 rounded-full" />
@@ -53,7 +53,7 @@ export default function Hero() {
             className="mt-6 text-5xl sm:text-6xl font-bold leading-tight text-foreground"
           >
             Secure Auth,  
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">
               Zero Complexity
             </span>
           </motion.h1>
@@ -124,7 +124,7 @@ export default function Hero() {
             initial={{ scale: 0.7, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 1, ease: "easeOut" }}
-            className="w-[380px] h-[380px] bg-gradient-to-br from-primary/50 to-secondary/40 rounded-full blur-2xl absolute"
+            className="w-[380px] h-[380px] bg-linear-to-br from-primary/50 to-secondary/40 rounded-full blur-2xl absolute"
           />
 
           <motion.div
