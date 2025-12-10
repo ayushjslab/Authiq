@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
+  const url = new URL(req.url);
+  const clientApp = url.searchParams.get('websiteId') || 'default';
+
+  console.log(clientApp)
+
   const redirectUri = process.env.GOOGLE_REDIRECT_URI;
   const clientId = process.env.GOOGLE_CLIENT_ID;
   const scope = encodeURIComponent('openid email profile');

@@ -12,6 +12,19 @@ export async function GET(req: NextRequest) {
     const url = new URL(req.url);
     const code = url.searchParams.get('code');
 
+     const stateParam = url.searchParams.get('state');
+
+    if (!stateParam) {
+      return NextResponse.json({ error: 'State missing' }, { status: 400 });
+    }
+
+    // Decode the state
+    const stateUrl = new URL(decodeURIComponent(stateParam));
+
+    // Get websiteId from query params
+    const websiteId = stateUrl.searchParams.get('websiteId');
+
+    console.log('websiteId:', websiteId);
     if (!code) {
       return NextResponse.json({ error: 'Authorization code missing' }, { status: 400 });
     }
@@ -48,7 +61,6 @@ export async function GET(req: NextRequest) {
       email: primaryEmail,
       avatar_url: userResponse.data.avatar_url,
     };
-
 
     // Issue JWT
     const token = jwt.sign(user, JWT_SECRET, { expiresIn: '1h' });

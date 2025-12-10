@@ -1,13 +1,19 @@
 "use client"
 
-import { signIn } from "next-auth/react"
+import Navbar from "@/components/custom/hero/navbar"
+import Hero from "@/components/custom/hero/hero"
+import HowToUse from "@/components/custom/hero/how-to-use"
+import Reviews from "@/components/custom/hero/reviews"
+import Footer from "@/components/custom/hero/footer"
 
-export default function Login() {
+export default function Home() {
   return (
-    <div style={{ padding: 40 }}>
-      <h1>Login</h1>
-      <button onClick={() => signIn("google")}>Sign in with Google</button>
-      <button onClick={() => signIn("github")}>Sign in with GitHub</button>
-    </div>
+    <main className="min-h-screen bg-background">
+      <Navbar />
+      <Hero />
+      <HowToUse /> 
+      <Reviews />
+      <Footer />
+    </main>
   )
 }
