@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 import jwt from "jsonwebtoken";
 import WebsiteUser from "@/models/websiteUsers.model";
+import Website from "@/models/website.model";
 
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID!;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET!;
@@ -66,27 +67,42 @@ export async function GET(req: NextRequest) {
       login: userResponse.data.login,
       name: userResponse.data.name,
       email: primaryEmail,
-      avatar_url: userResponse.data.avatar_url,
+      image: userResponse.data.avatar_url,
     };
 
-    const resData = await WebsiteUser.create({
+    const existWebsiteUser = await WebsiteUser.findOne({
       website: websiteId,
-      name: user.name,
       email: user.email,
-      image: user.avatar_url,
     });
 
-    console.log(resData);
+    if (!existWebsiteUser) {
+      const resData = await WebsiteUser.create({
+        website: websiteId,
+        name: user.name,
+        email: user.email,
+        image: user.image,
+      });
 
-    // Issue JWT
-    const token = jwt.sign(user, JWT_SECRET, { expiresIn: "1h" });
+      console.log(resData);
+    }
 
-    const res = NextResponse.redirect("http://localhost:3001");
+    const website = await Website.findById(websiteId)
+      .select("redirectUrl secretKey")
+      .lean();
+    if (!website?.redirectUrl) {
+      return NextResponse.json(
+        { error: "Redirect URL not found" },
+        { status: 404 }
+      );
+    }
+    const token = jwt.sign(user, website.secretKey, { expiresIn: "1h" });
+    const res = NextResponse.redirect(website.redirectUrl);
+
     res.cookies.set("user_token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       path: "/",
-      maxAge: 60 * 60 * 24, // 1 day
+      maxAge: 60 * 60 * 24,
     });
     return res;
   } catch (error: any) {

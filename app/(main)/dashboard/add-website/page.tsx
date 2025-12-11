@@ -9,6 +9,7 @@ export default function Page() {
     name: string
     url: string
     apiKey: string
+    secretKey: string
   } | null>(null)
 
   return (

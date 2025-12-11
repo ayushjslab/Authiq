@@ -19,6 +19,7 @@ export async function getUserFromJWT(): Promise<UserPayload | null> {
   try {
     const payload = jwt.verify(token, JWT_SECRET) as UserPayload;
     if (!payload.id || !payload.email) return null; // extra safety
+    console.log(payload)
     return payload;
   } catch {
     return null;

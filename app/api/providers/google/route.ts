@@ -1,10 +1,31 @@
+import Website from '@/models/website.model';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
-  const url = new URL(req.url);
-  const clientApp = url.searchParams.get('websiteId') || 'default';
+  const referer = req.headers.get("referer");
 
-  console.log(clientApp)
+  const match = referer?.match(/^https?:\/\/([^:/?#]+)(?::\d+)?/);
+
+  if (!match) {
+    return NextResponse.json({success: false, message: "Hostname not correct"}, {status: 500})
+  }
+  const hostname = match[1];
+
+  const url = new URL(req.url);
+  const websiteId = url.searchParams.get("websiteId");
+
+  console.log(hostname, websiteId)
+
+  const website = await Website.findOne({
+      _id: websiteId,
+      websiteUrl: hostname,
+    });
+
+    if(!website) {
+      return NextResponse.json({
+        success: false, message: "Wrong API or Hostname"
+      })
+    }
 
   const redirectUri = process.env.GOOGLE_REDIRECT_URI;
   const clientId = process.env.GOOGLE_CLIENT_ID;

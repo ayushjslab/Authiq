@@ -1,35 +1,41 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Globe, Link2 } from "lucide-react";
 import axios from "axios";
-import { useUser } from "@/hooks/useUser";
 import { toast } from "sonner";
 import { getUserFromJWT } from "@/hooks/getUser";
 
 interface AddWebsitePageProps {
-  onSuccess: (data: { name: string; url: string; apiKey: string }) => void;
-}
-
-interface Payload {
-  id: string;
-  name: string;
-  email: string;
+  onSuccess: (data: {
+    name: string;
+    url: string;
+    apiKey: string;
+    secretKey: string;
+  }) => void;
 }
 
 export default function AddWebsitePage({ onSuccess }: AddWebsitePageProps) {
+  const [mounted, setMounted] = useState(false);
   const [name, setName] = useState("");
   const [url, setUrl] = useState("");
+  const [redirectUrl, setRedirectUrl] = useState("");
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<{ name?: string; url?: string }>({});
+  const [errors, setErrors] = useState<{
+    name?: string;
+    url?: string;
+    redirectUrl?: string;
+  }>({});
 
-  const { user, loading: userLoading, error: userError } = useUser();
+  // Only render after client mount
+  useEffect(() => setMounted(true), []);
 
   const formatUrl = useCallback((u: string) => {
     if (!u) return u;
+    u = u.trim();
     return u.startsWith("http") ? u : `https://${u}`;
   }, []);
 
@@ -49,24 +55,26 @@ export default function AddWebsitePage({ onSuccess }: AddWebsitePageProps) {
     const newErrors: typeof errors = {};
 
     if (!name.trim()) newErrors.name = "Website name is required";
+
     if (!url.trim()) newErrors.url = "Website URL is required";
     else if (!isValidUrl(url)) newErrors.url = "Please enter a valid URL";
 
+    if (!redirectUrl.trim()) newErrors.redirectUrl = "Redirect URL is required";
+    else if (!isValidUrl(redirectUrl)) newErrors.redirectUrl = "Please enter a valid redirect URL";
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  }, [name, url, isValidUrl, errors]);
+  }, [name, url, redirectUrl, isValidUrl]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (loading || userLoading) return;
-
+    if (loading) return;
     if (!validateForm()) return;
 
     try {
       setLoading(true);
-
       const normalizedUrl = formatUrl(url);
+      const normalizedRedirect = formatUrl(redirectUrl);
       const data = await getUserFromJWT();
 
       if (!data?.id) {
@@ -75,27 +83,30 @@ export default function AddWebsitePage({ onSuccess }: AddWebsitePageProps) {
       }
 
       const res = await axios.post(`/api/website/add`, {
-        userId: data.id, // now fully typed
+        userId: data.id,
         websiteUrl: normalizedUrl,
+        redirectUrl: normalizedRedirect,
         name,
       });
 
       if (res.data.success) {
         toast.success(res.data.message);
-
         onSuccess({
           name,
           url: normalizedUrl,
           apiKey: res.data.website._id,
+          secretKey: res.data.website.secretKey,
         });
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
       toast.error("Failed to add website");
     } finally {
       setLoading(false);
     }
   };
+
+  if (!mounted) return null; // prevent SSR/client mismatch
 
   return (
     <motion.div
@@ -142,14 +153,12 @@ export default function AddWebsitePage({ onSuccess }: AddWebsitePageProps) {
           <label className="text-sm font-semibold flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-rose-500" /> Website Name
           </label>
-
           <Input
             placeholder="My Awesome Website"
             value={name}
             onChange={(e) => {
               setName(e.target.value);
-              if (errors.name)
-                setErrors((prev) => ({ ...prev, name: undefined }));
+              if (errors.name) setErrors((prev) => ({ ...prev, name: undefined }));
             }}
             disabled={loading}
             className={`bg-input border-2 transition-all ${
@@ -158,10 +167,7 @@ export default function AddWebsitePage({ onSuccess }: AddWebsitePageProps) {
                 : "border-rose-500/30 focus:border-rose-500/60"
             }`}
           />
-
-          {errors.name && (
-            <p className="text-xs text-destructive">{errors.name}</p>
-          )}
+          {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
         </div>
 
         {/* Website URL */}
@@ -169,14 +175,12 @@ export default function AddWebsitePage({ onSuccess }: AddWebsitePageProps) {
           <label className="text-sm font-semibold flex items-center gap-2">
             <Link2 className="w-4 h-4 text-rose-500" /> Website URL
           </label>
-
           <Input
             placeholder="example.com or https://example.com"
             value={url}
             onChange={(e) => {
               setUrl(e.target.value);
-              if (errors.url)
-                setErrors((prev) => ({ ...prev, url: undefined }));
+              if (errors.url) setErrors((prev) => ({ ...prev, url: undefined }));
             }}
             disabled={loading}
             className={`bg-input border-2 transition-all ${
@@ -185,16 +189,35 @@ export default function AddWebsitePage({ onSuccess }: AddWebsitePageProps) {
                 : "border-rose-500/30 focus:border-rose-500/60"
             }`}
           />
+          {errors.url && <p className="text-xs text-destructive">{errors.url}</p>}
+        </div>
 
-          {errors.url && (
-            <p className="text-xs text-destructive">{errors.url}</p>
-          )}
+        {/* Redirect URL */}
+        <div className="space-y-2">
+          <label className="text-sm font-semibold flex items-center gap-2">
+            <Link2 className="w-4 h-4 text-rose-500" /> Redirect URL
+          </label>
+          <Input
+            placeholder="https://example.com/callback"
+            value={redirectUrl}
+            onChange={(e) => {
+              setRedirectUrl(e.target.value);
+              if (errors.redirectUrl) setErrors((prev) => ({ ...prev, redirectUrl: undefined }));
+            }}
+            disabled={loading}
+            className={`bg-input border-2 transition-all ${
+              errors.redirectUrl
+                ? "border-destructive"
+                : "border-rose-500/30 focus:border-rose-500/60"
+            }`}
+          />
+          {errors.redirectUrl && <p className="text-xs text-destructive">{errors.redirectUrl}</p>}
         </div>
 
         {/* Submit Button */}
         <Button
           type="submit"
-          disabled={loading || userLoading}
+          disabled={loading}
           className="w-full bg-linear-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white py-2.5 rounded-lg relative overflow-hidden group"
         >
           <motion.div
@@ -203,7 +226,6 @@ export default function AddWebsitePage({ onSuccess }: AddWebsitePageProps) {
             whileHover={{ x: "100%" }}
             transition={{ duration: 0.5 }}
           />
-
           <span className="relative flex items-center justify-center gap-2">
             {loading ? (
               <>

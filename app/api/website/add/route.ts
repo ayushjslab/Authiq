@@ -8,21 +8,25 @@ export async function POST(req: Request) {
     await connectDB();
 
     const body = await req.json();
-    const { name, userId, websiteUrl } = body;
+    const { name, userId, websiteUrl, redirectUrl } = body;
 
-    console.log(name, userId, websiteUrl)
+    console.log(name, userId, websiteUrl, redirectUrl);
 
-    if (!name || !userId || !websiteUrl) {
+    if (!name || !userId || !websiteUrl || !redirectUrl) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
       );
     }
 
+    const hostnameMatch = websiteUrl.match(/^https?:\/\/([^:/?#]+)(?::\d+)?/);
+    const hostname = hostnameMatch ? hostnameMatch[1] : websiteUrl;
+
     const newWebsite = await Website.create({
       name,
       user: userId,
-      websiteUrl,
+      websiteUrl: hostname, 
+      redirectUrl,
     });
 
     return NextResponse.json(
@@ -33,6 +37,7 @@ export async function POST(req: Request) {
       },
       { status: 201 }
     );
+
   } catch (err) {
     console.error(err);
     return NextResponse.json(

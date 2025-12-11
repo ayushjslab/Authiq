@@ -1,28 +1,36 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { Card } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Check, Copy, RotateCcw, ExternalLink } from "lucide-react"
-import { useState } from "react"
+import { motion } from "framer-motion";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Check, Copy, RotateCcw, ExternalLink } from "lucide-react";
+import { useState } from "react";
 
 interface SuccessDisplayProps {
   data: {
-    name: string
-    url: string
-    apiKey: string
-  }
-  onReset: () => void
+    name: string;
+    url: string;
+    apiKey: string;
+    secretKey: string;
+  };
+  onReset: () => void;
 }
 
 export default function SuccessDisplay({ data, onReset }: SuccessDisplayProps) {
-  const [copied, setCopied] = useState(false)
+  const [copied, setCopied] = useState(false);
+  const [secretCopied, setSecretCopied] = useState(false);
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(data.apiKey)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
+  const copyToClipboard = (key: string) => {
+    if(key == "api"){
+      navigator.clipboard.writeText(data.apiKey);
+      setCopied(true);
+    }else{
+      navigator.clipboard.writeText(data.secretKey)
+      setSecretCopied(true)
+    }
+    setTimeout(() => setCopied(false), 2000);
+     setTimeout(() => setSecretCopied(false), 2000);
+  };
 
   const containerVariants = {
     hidden: { opacity: 0, scale: 0.95 },
@@ -35,7 +43,7 @@ export default function SuccessDisplay({ data, onReset }: SuccessDisplayProps) {
         delayChildren: 0.2,
       },
     },
-  }
+  };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -44,18 +52,22 @@ export default function SuccessDisplay({ data, onReset }: SuccessDisplayProps) {
       y: 0,
       transition: { duration: 0.5, ease: "easeOut" as const },
     },
-  }
+  };
 
   return (
-    <motion.div className="w-full max-w-2xl" variants={containerVariants} initial="hidden" animate="visible">
+    <motion.div
+      className="w-full max-w-2xl"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
       {/* Success animation background */}
       <motion.div
         className="absolute inset-0 opacity-20"
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 0.1 }}
         transition={{ duration: 0.8 }}
-      >
-      </motion.div>
+      ></motion.div>
 
       <div className="relative z-10 space-y-6">
         {/* Success Icon */}
@@ -69,7 +81,10 @@ export default function SuccessDisplay({ data, onReset }: SuccessDisplayProps) {
             <motion.div
               className="absolute inset-0 rounded-full bg-rose-500/20 border-2 border-rose-500"
               animate={{
-                boxShadow: ["0 0 0 0 rgba(244, 114, 182, 0.4)", "0 0 0 20px rgba(244, 114, 182, 0)"],
+                boxShadow: [
+                  "0 0 0 0 rgba(244, 114, 182, 0.4)",
+                  "0 0 0 20px rgba(244, 114, 182, 0)",
+                ],
               }}
               transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}
             />
@@ -82,9 +97,16 @@ export default function SuccessDisplay({ data, onReset }: SuccessDisplayProps) {
           <Card className="border border-rose-500/30 bg-card/50 backdrop-blur-xl shadow-2xl">
             <div className="p-8 space-y-6">
               {/* Success Message */}
-              <motion.div className="text-center space-y-2" variants={itemVariants}>
-                <h2 className="text-3xl font-bold text-foreground">Success! 🎉</h2>
-                <p className="text-muted-foreground">Your website has been registered successfully</p>
+              <motion.div
+                className="text-center space-y-2"
+                variants={itemVariants}
+              >
+                <h2 className="text-3xl font-bold text-foreground">
+                  Success! 🎉
+                </h2>
+                <p className="text-muted-foreground">
+                  Your website has been registered successfully
+                </p>
               </motion.div>
 
               {/* Website Details */}
@@ -95,8 +117,12 @@ export default function SuccessDisplay({ data, onReset }: SuccessDisplayProps) {
                     className="p-4 rounded-lg bg-secondary/30 border border-rose-500/20"
                     whileHover={{ scale: 1.02 }}
                   >
-                    <p className="text-xs font-semibold text-muted-foreground mb-1">WEBSITE NAME</p>
-                    <p className="text-lg font-semibold text-foreground wrap-break-word">{data.name}</p>
+                    <p className="text-xs font-semibold text-muted-foreground mb-1">
+                      WEBSITE NAME
+                    </p>
+                    <p className="text-lg font-semibold text-foreground wrap-break-word">
+                      {data.name}
+                    </p>
                   </motion.div>
 
                   {/* Website URL */}
@@ -105,8 +131,12 @@ export default function SuccessDisplay({ data, onReset }: SuccessDisplayProps) {
                     whileHover={{ scale: 1.02 }}
                   >
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-semibold text-muted-foreground mb-1">WEBSITE URL</p>
-                      <p className="text-lg font-semibold text-rose-500 break-all">{data.url}</p>
+                      <p className="text-xs font-semibold text-muted-foreground mb-1">
+                        WEBSITE URL
+                      </p>
+                      <p className="text-lg font-semibold text-rose-500 break-all">
+                        {data.url}
+                      </p>
                     </div>
                     <a
                       href={data.url}
@@ -122,11 +152,15 @@ export default function SuccessDisplay({ data, onReset }: SuccessDisplayProps) {
                 {/* API Key Section */}
                 <motion.div className="space-y-3" variants={itemVariants}>
                   <div className="p-4 rounded-lg bg-linear-to-br from-rose-500/10 to-rose-500/5 border-2 border-rose-500/40">
-                    <p className="text-xs font-bold text-rose-500 mb-3 uppercase tracking-widest">Your API Key</p>
+                    <p className="text-xs font-bold text-rose-500 mb-3 uppercase tracking-widest">
+                      Your API Key
+                    </p>
                     <div className="flex items-center gap-3 bg-background/50 p-3 rounded-md border border-rose-500/20 group">
-                      <code className="flex-1 text-sm font-mono text-foreground/80 break-all">{data.apiKey}</code>
+                      <code className="flex-1 text-sm font-mono text-foreground/80 break-all">
+                        {data.apiKey}
+                      </code>
                       <motion.button
-                        onClick={copyToClipboard}
+                        onClick={() => copyToClipboard("api")}
                         className="shrink-0 p-2 hover:bg-rose-500/20 rounded-md transition-colors"
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
@@ -143,10 +177,42 @@ export default function SuccessDisplay({ data, onReset }: SuccessDisplayProps) {
                     </p>
                   </div>
                 </motion.div>
+
+                {/* secret key section */}
+                <motion.div className="space-y-3" variants={itemVariants}>
+                  <div className="p-4 rounded-lg bg-linear-to-br from-rose-500/10 to-rose-500/5 border-2 border-rose-500/40">
+                    <p className="text-xs font-bold text-rose-500 mb-3 uppercase tracking-widest">
+                      Your Secret Key
+                    </p>
+                    <div className="flex items-center gap-3 bg-background/50 p-3 rounded-md border border-rose-500/20 group">
+                      <code className="flex-1 text-sm font-mono text-foreground/80 break-all">
+                        {data.secretKey}
+                      </code>
+                      <motion.button
+                        onClick={() => copyToClipboard("secret")}
+                        className="shrink-0 p-2 hover:bg-rose-500/20 rounded-md transition-colors"
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        {secretCopied ? (
+                          <Check className="w-4 h-4 text-green-500" />
+                        ) : (
+                          <Copy className="w-4 h-4 text-rose-500" />
+                        )}
+                      </motion.button>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      💡 Keep this key safe. You'll need it for Fetch users.
+                    </p>
+                  </div>
+                </motion.div>
               </motion.div>
 
               {/* Action Buttons */}
-              <motion.div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-4" variants={itemVariants}>
+              <motion.div
+                className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-4"
+                variants={itemVariants}
+              >
                 <Button
                   onClick={onReset}
                   variant="outline"
@@ -167,5 +233,5 @@ export default function SuccessDisplay({ data, onReset }: SuccessDisplayProps) {
         </motion.div>
       </div>
     </motion.div>
-  )
+  );
 }
