@@ -1,8 +1,10 @@
 // models/Website.ts
-import { Schema, model, models, Types } from "mongoose";
+import { Schema, model, models, Types, ObjectId, Document } from "mongoose";
 import crypto from "crypto";
 
-export interface IWebsite {
+export interface IWebsite extends Document {
+  createdAt: string;
+  _id: Types.ObjectId;
   user: Types.ObjectId;
   name: string;
   websiteUrl: string;
