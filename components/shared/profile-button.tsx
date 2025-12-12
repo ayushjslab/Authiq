@@ -6,34 +6,40 @@ import { ChevronDown } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import axios from "axios";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 export default function ProfileButton() {
   const [open, setOpen] = useState(false);
 
   const { data: session } = useSession();
 
-  if(! session || !session.user) {
-    return null
+  if (!session || !session.user) {
+    return null;
   }
-  const {user} = session
 
-  console.log(user)
+  const { user } = session;
+  const router = useRouter();
 
-  const handleLogout = async () => {
-    try {
-        const res = await axios.post(`/api/logout`)
-        if(res.data.success) {
-          toast.success(res.data.message)
-        }
-    } catch (error) {
-        console.log(error)
-        toast.error("Internal server error")
-    }
-  }
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      return axios.post("/api/logout");
+    },
+    onSuccess: (res) => {
+      toast.success(res.data.message || "Logged out");
+      window.location.reload();
+    },
+    onError: () => {
+      toast.error("Internal server error");
+    },
+  });
+
+  const handleLogout = () => {
+    logoutMutation.mutate();
+  };
 
   return (
     <div className="relative select-none">
-        
       {/* Button */}
       <motion.button
         onClick={() => setOpen(!open)}
@@ -50,13 +56,11 @@ export default function ProfileButton() {
           whileHover={{ rotate: 5 }}
         />
 
-        {/* User Info */}
         <div className="text-left">
           <p className="text-sm font-semibold text-foreground">{user.name}</p>
           <p className="text-xs text-muted-foreground">{user.email}</p>
         </div>
 
-        {/* Icon */}
         <motion.div animate={{ rotate: open ? 180 : 0 }}>
           <ChevronDown className="w-4 h-4 text-muted-foreground" />
         </motion.div>
@@ -74,26 +78,31 @@ export default function ProfileButton() {
                        backdrop-blur-xl border border-border/70 shadow-xl
                        overflow-hidden"
           >
-           
-            {/* Options */}
             <div className="p-2 flex flex-col">
-              {["Dashboard", "Settings", "Billing"].map((item) => (
+              {[
+                { label: "Dashboard", path: "/dashboard" },
+                { label: "Settings", path: "/settings" },
+                { label: "Billing", path: "/billing" },
+              ].map((item) => (
                 <motion.button
-                  key={item}
+                  key={item.label}
                   whileHover={{
                     backgroundColor: "rgba(220,38,38,0.08)",
                     x: 4,
                   }}
+                  onClick={() => {
+                    setOpen(false);
+                    router.push(item.path);
+                  }}
                   className="text-left px-4 py-2 rounded-lg text-sm text-foreground 
-                             hover:text-primary transition-colors"
+               hover:text-primary transition-colors"
                 >
-                  {item}
+                  {item.label}
                 </motion.button>
               ))}
-
               <motion.button
                 whileHover={{ backgroundColor: "rgba(220,38,38,0.15)", x: 4 }}
-                onClick={() => handleLogout()}
+                onClick={handleLogout}
                 className="text-left px-4 py-2 rounded-lg text-sm text-destructive font-semibold mt-1"
               >
                 Log Out

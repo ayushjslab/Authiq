@@ -25,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export interface Website {
   id: string;
@@ -49,46 +50,59 @@ export function WebsiteCard({ website }: { website: Website }) {
     {}
   );
 
+  const queryClient = useQueryClient();
+
   const copyToClipboard = (text: string, field: "id" | "secretKey") => {
     navigator.clipboard.writeText(text);
     setCopied({ ...copied, [field]: true });
     setTimeout(() => setCopied({ ...copied, [field]: false }), 2000);
   };
 
-  async function handleDelete() {
-    try {
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
       setLoading(true);
-
-      const res = await axios.delete(`/api/website/${website.id}/delete`);
-      if (res.data.success) {
-        toast.success(res.data.message);
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to delete");
-    } finally {
-      setLoading(false);
+      return axios.delete(`/api/website/${website.id}/delete`);
+    },
+    onSuccess: (res) => {
+      toast.success(res.data.message || "Deleted successfully");
+      queryClient.invalidateQueries({ queryKey: ["websites"] });
+      setLoading(false)
       setOpenDelete(false);
-    }
-  }
+    },
+    onError: () => {
+      toast.error("Failed to delete");
+       setLoading(false)
+      setOpenDelete(false);
+    },
+  });
 
-  const handleSave = async () => {
-    try {
+  const handleDelete = () => {
+    deleteMutation.mutate();
+  };
+
+  const editMutation = useMutation({
+    mutationFn: async () => {
       setLoading(true);
-      const res = await axios.put(`/api/website/${website.id}/edit`, {
+      return axios.put(`/api/website/${website.id}/edit`, {
         name: name.trim(),
-        redirectUrl: redirectUrl.trim()
+        redirectUrl: redirectUrl.trim(),
       });
-      if (res.data.success) {
-        toast.success(res.data.message);
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error("Failed to edit");
-    } finally {
+    },
+    onSuccess: (res) => {
+      toast.success(res.data.message || "Updated successfully");
+      queryClient.invalidateQueries({ queryKey: ["websites"] }); // refresh data
       setLoading(false);
-      setOpenEdit(false)
-    }
+      setOpenEdit(false);
+    },
+    onError: () => {
+      toast.error("Failed to edit");
+      setLoading(false);
+      setOpenEdit(false);
+    },
+  });
+
+  const handleSave = () => {
+    editMutation.mutate();
   };
 
   const cardVariants = {
@@ -97,15 +111,6 @@ export function WebsiteCard({ website }: { website: Website }) {
       opacity: 1,
       y: 0,
       transition: { duration: 0.4, ease: "easeOut" as const },
-    },
-  };
-
-  const buttonVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: { duration: 0.25, ease: "easeOut" as const },
     },
   };
 

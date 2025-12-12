@@ -2,18 +2,16 @@
 
 import { motion } from "framer-motion";
 import { Website, WebsiteCard } from "./website-card";
-import { useEffect, useState } from "react";
-import { getUserFromJWT } from "@/hooks/getUser";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { getUserFromJWT } from "@/hooks/getUser";
 
 export function WebsitesList() {
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.08,
-      },
+      transition: { staggerChildren: 0.08 },
     },
   };
 
@@ -25,21 +23,16 @@ export function WebsitesList() {
       transition: { duration: 0.6, ease: "easeOut" as const },
     },
   };
-
-  const [websiteList, setWebsiteList] = useState<Website[]>([]);
-
-  useEffect(() => {
-    async function fetchWebsites() {
+  const { data, isLoading } = useQuery({
+    queryKey: ["websites"],
+    queryFn: async () => {
       const user = await getUserFromJWT();
       const res = await axios.get(`/api/website/fetch?userId=${user?.id}`);
+      return res.data.data as Website[];
+    },
+  });
 
-      if (res.data.success) {
-        setWebsiteList(res.data.data);
-        console.log(res.data.data);
-      }
-    }
-    fetchWebsites();
-  }, []);
+  if (isLoading) return <p>Loading...</p>;
 
   return (
     <motion.div
@@ -56,7 +49,7 @@ export function WebsitesList() {
       </motion.div>
 
       <div className="grid gap-4 md:gap-6">
-        {websiteList?.map((website) => (
+        {data?.map((website) => (
           <WebsiteCard key={website.id} website={website} />
         ))}
       </div>
