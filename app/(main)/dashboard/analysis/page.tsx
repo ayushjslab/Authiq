@@ -7,6 +7,7 @@ import { motion, MotionConfig } from "framer-motion"
 import { useState } from "react"
 import { Check, Copy, Plus, ExternalLink } from "lucide-react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 export type Website = {
   id: string
@@ -17,6 +18,7 @@ export type Website = {
 
 function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false)
+
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(text)
@@ -67,6 +69,7 @@ function LoadingSkeleton() {
 }
 
 function EmptyState() {
+  const router = useRouter();
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -80,7 +83,7 @@ function EmptyState() {
       <p className="text-muted-foreground mb-6 leading-relaxed">
         Get started by adding your first website to track analytics and insights.
       </p>
-      <button className="inline-flex items-center gap-2 px-6 py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-medium transition-colors">
+      <button onClick={() => router.push("/dashboard/add-website")} className="inline-flex items-center gap-2 px-6 py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-medium transition-colors">
         <Plus className="w-4 h-4" />
         Add Your First Website
       </button>

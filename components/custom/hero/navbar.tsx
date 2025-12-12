@@ -16,7 +16,6 @@ export default function Navbar() {
   const { data: session, status } = useSession();
 
   const navItems = [
-    { label: "How It Works", href: "#how-it-works" },
     { label: "Reviews", href: "#reviews" },
     { label: "Features", href: "#features" },
     { label: "Pricing", href: "#pricing" },

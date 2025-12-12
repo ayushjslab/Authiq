@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
-import  Website  from "@/models/website.model";
+import Website from "@/models/website.model";
+import WebsiteUser from "@/models/websiteUsers.model";
 
 export async function DELETE(
   req: Request,
@@ -10,27 +11,40 @@ export async function DELETE(
     await connectDB();
 
     const { websiteId } = await params;
-    console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh",websiteId)
+
+    if (!websiteId) {
+      return NextResponse.json(
+        { success: false, message: "Website ID is required" },
+        { status: 400 }
+      );
+    }
+
     const deletedWebsite = await Website.findByIdAndDelete(websiteId);
 
     if (!deletedWebsite) {
       return NextResponse.json(
-        { error: "Website not found" },
+        { success: false, message: "Website not found" },
         { status: 404 }
       );
     }
 
+    const deletedUsers = await WebsiteUser.deleteMany({
+      website: websiteId,
+    });
+
     return NextResponse.json(
       {
-        message: "Website deleted successfully",
-        website: deletedWebsite,
+        success: true,
+        message: "Website and all linked users deleted successfully",
+        deletedWebsite,
+        deletedUsersCount: deletedUsers.deletedCount,
       },
       { status: 200 }
     );
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error("DELETE ERROR:", error);
     return NextResponse.json(
-      { error: "Server error" },
+      { success: false, message: "Server error" },
       { status: 500 }
     );
   }

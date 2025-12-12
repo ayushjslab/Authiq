@@ -20,9 +20,9 @@ export default function Sidebar() {
   const menuItems = [
     { icon: Plus, label: "Add website", slug: "add-website" },
     { icon: BarChart3, label: "Analysis", slug: "analysis" },
+    { icon: User, label: "Account", slug: "account" },
     { icon: Settings, label: "Settings", slug: "settings" },
-    { icon: User, label: "Profile", slug: "profile" },
-    { icon: Palette, label: "Customization", slug: "customize" },
+    { icon: Palette, label: "Customization", slug: "customization" },
     { icon: CreditCard, label: "Billing", slug: "billing" },
   ];
 
@@ -70,10 +70,10 @@ export default function Sidebar() {
                 className={`flex items-center gap-4 px-3 py-3 rounded-xl transition-all duration-300 group relative overflow-hidden ${
                   isActive
                     ? "bg-rose-200 text-rose-500"
-                    : "text-gray-200 hover:bg-rose-100 hover:text-rose-600"
+                    : "text-gray-200 "
                 }`}
               >
-                <span className="absolute inset-0 bg-linear-to-r from-rose-400 via-rose-300 to-rose-400 opacity-0 group-hover:opacity-20 rounded-xl transition-opacity duration-300"></span>
+                <span className="absolute inset-0 bg-linear-to-r from-rose-400 via-rose-300 to-rose-400 opacity-0 group-hover:opacity-40 rounded-xl transition-opacity duration-300"></span>
                 <Icon
                   className={`w-6 h-6 shrink-0 transition-colors duration-300 ${
                     isActive
