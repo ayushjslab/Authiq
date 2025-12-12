@@ -4,7 +4,7 @@ import Website from "@/models/website.model";
 
 export async function GET(
   req: Request,
-  { params }: { params: { websiteId: string } }
+  { params }: { params: Promise<{ websiteId: string } > }
 ) {
   try {
     const { websiteId } = await params;
