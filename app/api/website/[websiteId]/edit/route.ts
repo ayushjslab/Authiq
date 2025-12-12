@@ -11,12 +11,12 @@ export async function PUT(
 
     const { websiteId } = await params;
     const body = await req.json();
-    const { name, websiteUrl } = body;
-
+    const { name, redirectUrl } = body;
+    console.log(name, redirectUrl)
     const updateData: any = {};
 
     if (name) updateData.name = name;
-    if (websiteUrl) updateData.websiteUrl = websiteUrl;
+    if (redirectUrl) updateData.redirectUrl = redirectUrl;
 
     const updatedWebsite = await Website.findByIdAndUpdate(
       websiteId,
@@ -34,6 +34,7 @@ export async function PUT(
     return NextResponse.json(
       {
         message: "Website updated successfully",
+        success: true,
         website: updatedWebsite,
       },
       { status: 200 }

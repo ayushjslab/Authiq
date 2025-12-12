@@ -10,7 +10,7 @@ export async function DELETE(
     await connectDB();
 
     const { websiteId } = await params;
-
+    console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh",websiteId)
     const deletedWebsite = await Website.findByIdAndDelete(websiteId);
 
     if (!deletedWebsite) {

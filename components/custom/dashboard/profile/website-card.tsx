@@ -24,6 +24,7 @@ import {
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 
 export interface Website {
   id: string;
@@ -58,21 +59,36 @@ export function WebsiteCard({ website }: { website: Website }) {
     try {
       setLoading(true);
 
-      const res = await axios.delete(
-        `/api/website/delete?websiteId=${website.id}`
-      );
+      const res = await axios.delete(`/api/website/${website.id}/delete`);
+      if (res.data.success) {
+        toast.success(res.data.message);
+      }
     } catch (err) {
       console.error(err);
+      toast.error("Failed to delete");
     } finally {
       setLoading(false);
+      setOpenDelete(false);
     }
   }
 
   const handleSave = async () => {
-    if (!name.trim() || !redirectUrl.trim()) return;
-
-    setLoading(true);
-    setLoading(false);
+    try {
+      setLoading(true);
+      const res = await axios.put(`/api/website/${website.id}/edit`, {
+        name: name.trim(),
+        redirectUrl: redirectUrl.trim()
+      });
+      if (res.data.success) {
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to edit");
+    } finally {
+      setLoading(false);
+      setOpenEdit(false)
+    }
   };
 
   const cardVariants = {
