@@ -19,13 +19,10 @@ export async function POST(req: Request) {
       );
     }
 
-    const hostnameMatch = websiteUrl.match(/^https?:\/\/([^:/?#]+)(?::\d+)?/);
-    const hostname = hostnameMatch ? hostnameMatch[1] : websiteUrl;
-
     const newWebsite = await Website.create({
       name,
       user: userId,
-      websiteUrl: hostname, 
+      websiteUrl, 
       redirectUrl,
     });
 

@@ -100,7 +100,7 @@ export async function GET(req: NextRequest) {
       { expiresIn: "2d" }
     );
     const res = NextResponse.redirect(website.redirectUrl);
-    res.cookies.set("user_token", token, {
+    res.cookies.set("authiq_token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       path: "/",
