@@ -6,6 +6,8 @@ export async function GET(req: NextRequest) {
 
   const match = referer?.match(/^https?:\/\/([^:/?#]+)(?::\d+)?/);
 
+  console.log(match)
+
   if (!match) {
     return NextResponse.json({success: false, message: "Hostname not correct"}, {status: 500})
   }

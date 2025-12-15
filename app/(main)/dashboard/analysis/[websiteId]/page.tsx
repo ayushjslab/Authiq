@@ -37,7 +37,6 @@ import axios from "axios";
 import Image from "next/image";
 import { IWebsite } from "@/models/website.model";
 
-
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -60,17 +59,23 @@ const itemVariants = {
   },
 };
 
+interface User {
+  _id: string;
+  name: string;
+  email: string;
+  image: string;
+  lastLoginAt: string; // ISO string from DB
+  createdAt: string;
+}
+
 export default function AnalyticsDashboard() {
   const [selectedFilter, setSelectedFilter] = useState("all");
-  const [users, setUsers] = useState([
-    {
-      _id: "1234",
-      name: "Sarah Johnson",
-      email: "sarah.j@example.com",
-      image: "/professional-woman.png",
-      createdAt: "2025-01-10T09:23:00",
-    },
-  ]);
+  const [users, setUsers] = useState<User[]>([]);
+
+  const isActive = (lastLoginAt: string | Date) => {
+    const TWO_DAYS = 2 * 24 * 60 * 60 * 1000;
+    return new Date().getTime() - new Date(lastLoginAt).getTime() < TWO_DAYS;
+  };
 
   const [websiteData, setWebsiteData] = useState<IWebsite>();
 
@@ -78,7 +83,7 @@ export default function AnalyticsDashboard() {
     const loginCounts: Record<string, number> = {};
 
     users.forEach((user) => {
-      const d = new Date(user.createdAt);
+      const d = new Date(user.lastLoginAt);
 
       const key = d.toISOString().split("T")[0];
 
@@ -105,9 +110,29 @@ export default function AnalyticsDashboard() {
   const totalLogins = users.length;
   const todayLogins = users.filter(
     (user) =>
-      new Date(user.createdAt).toDateString() === new Date().toDateString()
+      new Date(user.lastLoginAt).toDateString() === new Date().toDateString()
   ).length;
-  const avgLoginsPerDay = (totalLogins / 7).toFixed(1);
+
+  const getAvgLoginsPerDay = () => {
+    const today = new Date();
+    const last7Days = Array.from({ length: 7 }).map((_, i) => {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      return d.toDateString();
+    });
+
+    let total = 0;
+    last7Days.forEach((day) => {
+      const count = users.filter(
+        (user) => new Date(user.lastLoginAt).toDateString() === day
+      ).length;
+      total += count;
+    });
+
+    return (total / 7).toFixed(1);
+  };
+
+  const avgLoginsPerDay = getAvgLoginsPerDay();
 
   const fetchUsers = useMutation({
     mutationFn: async (websiteId: string) => {
@@ -121,22 +146,22 @@ export default function AnalyticsDashboard() {
   });
 
   const fetchWebsite = useMutation({
-  mutationFn: async (websiteId: string) => {
-    const res = await axios.get(`/api/website/${websiteId}/fetch`);
-    return res.data;
-  },
-  onSuccess: (data) => {
-    console.log(data)
-    setWebsiteData(data.data); 
-  },
-});
+    mutationFn: async (websiteId: string) => {
+      const res = await axios.get(`/api/website/${websiteId}/fetch`);
+      return res.data;
+    },
+    onSuccess: (data) => {
+      console.log(data);
+      setWebsiteData(data.data);
+    },
+  });
 
-useEffect(() => {
-  if (websiteId) {
-    fetchWebsite.mutate(websiteId as string);
-    fetchUsers.mutate(websiteId as string);
-  }
-}, [websiteId]);
+  useEffect(() => {
+    if (websiteId) {
+      fetchWebsite.mutate(websiteId as string);
+      fetchUsers.mutate(websiteId as string);
+    }
+  }, [websiteId]);
 
   return (
     <div className="min-h-screen bg-black text-rose-50">
@@ -157,7 +182,9 @@ useEffect(() => {
             </div>
             <div className="flex items-center gap-2 text-sm text-rose-400">
               <Globe className="h-4 w-4" />
-              <span className="hidden md:inline">{websiteData?.redirectUrl}</span>
+              <span className="hidden md:inline">
+                {websiteData?.redirectUrl}
+              </span>
             </div>
           </div>
         </div>
@@ -469,20 +496,29 @@ useEffect(() => {
                         <td className="py-4">
                           <div className="flex items-center gap-2 text-sm text-rose-300">
                             <Calendar className="h-3 w-3 text-rose-500" />
-                            {new Date(user.createdAt).toLocaleString("en-US", {
-                              month: "short",
-                              day: "numeric",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
+                            {new Date(user.lastLoginAt).toLocaleString(
+                              "en-US",
+                              {
+                                month: "short",
+                                day: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              }
+                            )}
                           </div>
                         </td>
                         <td className="py-4">
                           <Badge
                             variant="outline"
-                            className="border-rose-600 bg-rose-600/10 text-rose-400"
+                            className={`border-${
+                              isActive(user.lastLoginAt) ? "emerald" : "rose"
+                            }-600 ${
+                              isActive(user.lastLoginAt)
+                                ? "bg-emerald-600/10 text-emerald-400"
+                                : "bg-rose-600/10 text-rose-400"
+                            }`}
                           >
-                            Active
+                            {isActive(user.lastLoginAt) ? "Active" : "Inactive"}
                           </Badge>
                         </td>
                       </motion.tr>

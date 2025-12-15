@@ -18,12 +18,12 @@ export default function Sidebar() {
   const router = useRouter();
 
   const menuItems = [
-    { icon: Plus, label: "Add website", slug: "add-website" },
-    { icon: BarChart3, label: "Analysis", slug: "analysis" },
-    { icon: User, label: "Account", slug: "account" },
-    { icon: Settings, label: "Settings", slug: "settings" },
-    { icon: Palette, label: "Customization", slug: "customization" },
-    { icon: CreditCard, label: "Billing", slug: "billing" },
+    { icon: Palette, label: "Dashboard", slug: "/dashboard" },
+    { icon: Plus, label: "Add website", slug: "/dashboard/add-website" },
+    { icon: BarChart3, label: "Analysis", slug: "/dashboard/analysis" },
+    { icon: User, label: "Account", slug: "/dashboard/account" },
+    { icon: Settings, label: "Settings", slug: "/dashboard/settings" },
+    { icon: CreditCard, label: "Billing", slug: "/dashboard/billing" },
   ];
 
   return (
@@ -60,9 +60,8 @@ export default function Sidebar() {
         <nav className="mt-6 space-y-3 px-3">
           {menuItems.map((item) => {
             const Icon = item.icon;
-            const href = `/dashboard/${item.slug}`;
-            const isActive = pathName.includes(href);
-
+            const href = `${item.slug}`;
+            const isActive = pathName == item.slug;
             return (
               <Link
                 key={item.label}

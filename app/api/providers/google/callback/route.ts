@@ -24,8 +24,6 @@ export async function GET(req: NextRequest) {
     // Get websiteId from query params
     const websiteId = stateUrl.searchParams.get("websiteId");
 
-    console.log("websiteId:", websiteId);
-
     if (!code) {
       return NextResponse.json(
         { error: "Authorization code missing" },
@@ -62,15 +60,22 @@ export async function GET(req: NextRequest) {
       email: user.email,
     });
 
+    if (existWebsiteUser) {
+      existWebsiteUser.lastLoginAt = new Date();
+      await existWebsiteUser.save();
+    }
+
     if (!existWebsiteUser) {
       const resData = await WebsiteUser.create({
         website: websiteId,
+        provider: "google",
+        providerId: user.sub,
+        lastLoginAt: Date.now(),
+        emailVerified: user.email_verified,
         name: user.name,
         email: user.email,
         image: user.picture,
       });
-
-      console.log(resData);
     }
 
     const website = await Website.findById(websiteId)
@@ -85,19 +90,21 @@ export async function GET(req: NextRequest) {
 
     const token = jwt.sign(
       {
+        id: user.sub,
         email: user.email,
         name: user.name,
         image: user.picture,
+        provider: "google",
       },
       website.secretKey,
-      { expiresIn: "1h" }
+      { expiresIn: "2d" }
     );
     const res = NextResponse.redirect(website.redirectUrl);
     res.cookies.set("user_token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       path: "/",
-      maxAge: 60 * 60 * 24,
+      maxAge: 2 * 60 * 60 * 24,
     });
     return res;
   } catch (error: any) {

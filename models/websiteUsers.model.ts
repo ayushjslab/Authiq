@@ -2,6 +2,10 @@ import { Schema, model, models, Types } from "mongoose";
 
 export interface IWebsiteUser {
   website: Types.ObjectId;
+  providerId: string;
+  provider: "google" | "github";
+  emailVerified: boolean;
+  lastLoginAt: Date;
   name: string;
   email: string;
   image?: string;
@@ -13,6 +17,23 @@ const WebsiteUserSchema = new Schema<IWebsiteUser>(
       type: Schema.Types.ObjectId,
       ref: "Website",
       required: true,
+    },
+    providerId: {
+      type: String,
+      required: true,
+    },
+    provider: {
+      type: String,
+      enum: ["google", "github"],
+      required: true,
+    },
+    emailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    lastLoginAt: {
+      type: Date,
+      default: Date.now,
     },
     name: {
       type: String,

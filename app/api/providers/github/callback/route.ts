@@ -26,7 +26,6 @@ export async function GET(req: NextRequest) {
     // Get websiteId from query params
     const websiteId = stateUrl.searchParams.get("websiteId");
 
-    console.log("websiteId:", websiteId);
     if (!code) {
       return NextResponse.json(
         { error: "Authorization code missing" },
@@ -62,12 +61,14 @@ export async function GET(req: NextRequest) {
 
     const primaryEmail = emailsResponse.data.find((e: any) => e.primary)?.email;
 
+    console.log(userResponse);
+
     const user = {
       id: userResponse.data.id,
-      login: userResponse.data.login,
       name: userResponse.data.name,
       email: primaryEmail,
       image: userResponse.data.avatar_url,
+      provider: "github",
     };
 
     const existWebsiteUser = await WebsiteUser.findOne({
@@ -75,15 +76,22 @@ export async function GET(req: NextRequest) {
       email: user.email,
     });
 
+    if (existWebsiteUser) {
+      existWebsiteUser.lastLoginAt = new Date();
+      await existWebsiteUser.save();
+    }
+
     if (!existWebsiteUser) {
       const resData = await WebsiteUser.create({
         website: websiteId,
         name: user.name,
         email: user.email,
         image: user.image,
+        provider: "github",
+        emailVerified: true,
+        providerId: user.id,
+        lastLoginAt: Date.now,
       });
-
-      console.log(resData);
     }
 
     const website = await Website.findById(websiteId)
@@ -95,14 +103,14 @@ export async function GET(req: NextRequest) {
         { status: 404 }
       );
     }
-    const token = jwt.sign(user, website.secretKey, { expiresIn: "1h" });
+    const token = jwt.sign(user, website.secretKey, { expiresIn: "2d" });
     const res = NextResponse.redirect(website.redirectUrl);
 
     res.cookies.set("user_token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       path: "/",
-      maxAge: 60 * 60 * 24,
+      maxAge: 2 * 60 * 60 * 24,
     });
     return res;
   } catch (error: any) {
