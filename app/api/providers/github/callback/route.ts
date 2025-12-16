@@ -90,7 +90,7 @@ export async function GET(req: NextRequest) {
         provider: "github",
         emailVerified: true,
         providerId: user.id,
-        lastLoginAt: Date.now,
+        lastLoginAt: Date.now(),
       });
     }
 
