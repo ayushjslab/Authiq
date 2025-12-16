@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import Website from "@/models/website.model";
 import { connectDB } from "@/lib/db";

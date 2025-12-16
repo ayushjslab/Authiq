@@ -8,11 +8,11 @@ export async function POST(req: Request) {
     await connectDB();
 
     const body = await req.json();
-    const { name, userId, websiteUrl, redirectUrl } = body;
+    const { name, userId, websiteUrl } = body;
 
-    console.log(name, userId, websiteUrl, redirectUrl);
+    console.log(name, userId, websiteUrl);
 
-    if (!name || !userId || !websiteUrl || !redirectUrl) {
+    if (!name || !userId || !websiteUrl) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -22,8 +22,7 @@ export async function POST(req: Request) {
     const newWebsite = await Website.create({
       name,
       user: userId,
-      websiteUrl, 
-      redirectUrl,
+      websiteUrl,
     });
 
     return NextResponse.json(
@@ -34,12 +33,8 @@ export async function POST(req: Request) {
       },
       { status: 201 }
     );
-
   } catch (err) {
     console.error(err);
-    return NextResponse.json(
-      { error: "Server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

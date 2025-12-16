@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Zap, ShieldCheck } from "lucide-react";
 import { getUserFromJWT } from "@/hooks/getUser";
 import { useEffect } from "react";
+import { redirect } from "next/navigation";
 
 export default function Hero() {
   const containerVariants = {
@@ -28,7 +29,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden pt-20">
+    <section className="relative min-h-screen flex items-center overflow-hidden pt-10">
       {/* Soft background glow */}
       <div className="absolute inset-0 blur-[160px] opacity-30">
         <div className="absolute top-10 left-20 w-96 h-96 bg-primary/30 rounded-full" />
@@ -76,6 +77,7 @@ export default function Hero() {
             <Button
               size="lg"
               className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold flex items-center gap-2 group"
+              onClick={() => redirect("/dashboard")}
             >
               Get Started
               <motion.div
@@ -126,7 +128,7 @@ export default function Hero() {
             initial={{ scale: 0.7, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 1, ease: "easeOut" }}
-            className="w-[380px] h-[380px] bg-linear-to-br from-primary/50 to-secondary/40 rounded-full blur-2xl absolute"
+            className="w-[380px] h-[380px] bg-linear-to-br from-primary/20 to-secondary/10 rounded-full blur-2xl absolute"
           />
 
           <motion.div

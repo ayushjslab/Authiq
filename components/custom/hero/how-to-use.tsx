@@ -48,7 +48,7 @@ export default function HowToUse() {
   }
 
   return (
-    <section id="how-it-works" className="py-20 sm:py-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <section id="roadmap" className="py-20 sm:py-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <motion.div

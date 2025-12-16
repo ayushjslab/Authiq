@@ -2,8 +2,8 @@
 
 import { motion } from "framer-motion"
 import Link from "next/link"
-import { Mail, Github, Linkedin, Twitter, ShieldHalf } from "lucide-react"
-
+import { Mail, Github, Linkedin, Twitter, ShieldHalf, Instagram } from "lucide-react"
+import { FaXTwitter } from "react-icons/fa6";
 export default function Footer() {
   const currentYear = new Date().getFullYear()
 
@@ -11,34 +11,31 @@ export default function Footer() {
     Product: [
       { name: "Features", href: "#" },
       { name: "Pricing", href: "#" },
-      { name: "Security", href: "#" },
-      { name: "Roadmap", href: "#" },
+      { name: "Roadmap", href: "/#roadmap" },
     ],
     Developers: [
-      { name: "Documentation", href: "#" },
-      { name: "API Reference", href: "#" },
-      { name: "SDKs", href: "#" },
+      { name: "Documentation", href: "/docs" },
+      { name: "SDKs", href: "https://www.npmjs.com/package/authiq" },
       { name: "Code Examples", href: "#" },
     ],
     Company: [
-      { name: "About", href: "#" },
-      { name: "Blog", href: "#" },
-      { name: "Careers", href: "#" },
-      { name: "Contact", href: "#" },
+      { name: "About", href: "/about" },
+      { name: "Blog", href: "/blog" },
+      { name: "Contact", href: "/contact" },
     ],
     Legal: [
-      { name: "Privacy", href: "#" },
-      { name: "Terms", href: "#" },
-      { name: "Security", href: "#" },
-      { name: "Compliance", href: "#" },
+      { name: "Privacy", href: "/privacy" },
+      { name: "Terms", href: "/terms" },
+      { name: "Security", href: "/security" },
+      { name: "Compliance", href: "/compliance" },
     ],
   }
 
   const socialLinks = [
-    { icon: Twitter, label: "Twitter", href: "#" },
-    { icon: Github, label: "GitHub", href: "#" },
-    { icon: Linkedin, label: "LinkedIn", href: "#" },
-    { icon: Mail, label: "Email", href: "#" },
+    { icon: FaXTwitter, label: "Twitter", href: "https://x.com/ayushjslab" },
+    { icon: Github, label: "GitHub", href: "https://github.com/ayushjslab/Authiq" },
+    { icon: Linkedin, label: "LinkedIn", href: "https://in.linkedin.com/in/ayushjslab" },
+    { icon: Instagram, label: "Instagram", href: "https://www.instagram.com/ayushjslab" },
   ]
 
   return (

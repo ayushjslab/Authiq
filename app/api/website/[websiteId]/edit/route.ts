@@ -11,12 +11,12 @@ export async function PUT(
 
     const { websiteId } = await params;
     const body = await req.json();
-    const { name, redirectUrl } = body;
-    console.log(name, redirectUrl)
+    const { name, websiteUrl } = body;
+    console.log(name, websiteUrl)
     const updateData: any = {};
 
     if (name) updateData.name = name;
-    if (redirectUrl) updateData.redirectUrl = redirectUrl;
+    if (websiteUrl) updateData.websiteUrl = websiteUrl;
 
     const updatedWebsite = await Website.findByIdAndUpdate(
       websiteId,

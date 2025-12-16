@@ -8,7 +8,6 @@ export interface IWebsite extends Document {
   user: Types.ObjectId;
   name: string;
   websiteUrl: string;
-  redirectUrl: string;
   secretKey: string;
 }
 
@@ -25,10 +24,6 @@ const WebsiteSchema = new Schema<IWebsite>(
       trim: true,
     },
     websiteUrl: {
-      type: String,
-      required: true,
-    },
-    redirectUrl: {
       type: String,
       required: true,
     },

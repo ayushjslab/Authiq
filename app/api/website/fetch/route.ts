@@ -21,9 +21,7 @@ export async function GET(req: NextRequest) {
       data: websites.map((w) => ({
         id: w._id.toString(),
         name: w.name,
-        url: w.redirectUrl,
-        hostname: w.websiteUrl,
-        secretKey: w.secretKey,
+        websiteUrl: w.websiteUrl,
         createdAt: new Date(w.createdAt).toLocaleDateString("en-US", {
           month: "short",
           day: "numeric",

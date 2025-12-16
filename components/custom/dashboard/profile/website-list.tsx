@@ -17,7 +17,7 @@ export function WebsitesList() {
   }
 
   const titleVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 24 },
     visible: {
       opacity: 1,
       y: 0,
@@ -34,62 +34,112 @@ export function WebsitesList() {
     },
   })
 
+  /* ───────────────────────── Loading ───────────────────────── */
   if (isLoading) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-8">
         <div>
-          <h2 className="text-3xl font-bold text-foreground mb-2">My Websites</h2>
-          <p className="text-muted-foreground">Manage and monitor your web properties</p>
+          <h2 className="text-4xl font-bold tracking-tight">My Websites</h2>
+          <p className="text-muted-foreground">
+            Manage and monitor your web properties
+          </p>
         </div>
-        <div className="flex items-center justify-center py-16">
-          <div className="flex flex-col items-center gap-3">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <p className="text-sm text-muted-foreground">Loading your websites...</p>
+
+        <div className="flex items-center justify-center py-24">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/10">
+              <Loader2 className="h-6 w-6 animate-spin text-emerald-500" />
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Loading your websites…
+            </p>
           </div>
         </div>
       </div>
     )
   }
 
+  /* ───────────────────────── Empty ───────────────────────── */
   if (!data || data.length === 0) {
     return (
-      <motion.div className="space-y-6" initial="hidden" animate="visible" variants={containerVariants}>
+      <motion.div
+        className="space-y-10"
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+      >
         <motion.div variants={titleVariants}>
-          <h2 className="text-3xl font-bold text-foreground mb-2">My Websites</h2>
-          <p className="text-muted-foreground">Manage and monitor your web properties</p>
+          <h2 className="text-4xl font-bold tracking-tight">My Websites</h2>
+          <p className="text-muted-foreground">
+            Manage and monitor your web properties
+          </p>
         </motion.div>
 
         <motion.div
           variants={titleVariants}
-          className="flex flex-col items-center justify-center py-16 px-4 border-2 border-dashed border-border rounded-lg bg-muted/20"
+          className="
+            relative overflow-hidden rounded-2xl
+            border border-emerald-500/30
+            bg-linear-to-br from-emerald-500/10 via-transparent to-transparent
+            px-6 py-20 text-center
+          "
         >
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 mb-4">
-            <Globe className="h-8 w-8 text-primary" />
+          {/* glow */}
+          <div className="absolute inset-0 bg-emerald-500/10 blur-3xl opacity-30" />
+
+          <div className="relative z-10 flex flex-col items-center">
+            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-emerald-500/15">
+              <Globe className="h-9 w-9 text-emerald-400" />
+            </div>
+
+            <h3 className="text-2xl font-semibold mb-3">
+              No websites yet
+            </h3>
+            <p className="max-w-md text-muted-foreground">
+              Add your first website to unlock analytics, tracking, and insights.
+            </p>
           </div>
-          <h3 className="text-xl font-semibold text-foreground mb-2">No websites yet</h3>
-          <p className="text-muted-foreground text-center max-w-sm">
-            Get started by adding your first website to monitor and manage your web properties.
-          </p>
         </motion.div>
       </motion.div>
     )
   }
 
+  /* ───────────────────────── List ───────────────────────── */
   return (
-    <motion.div className="space-y-6" initial="hidden" animate="visible" variants={containerVariants}>
-      <motion.div variants={titleVariants} className="flex items-end justify-between">
+    <motion.div
+      className="space-y-10"
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+    >
+      <motion.div
+        variants={titleVariants}
+        className="flex flex-wrap items-end justify-between gap-6"
+      >
         <div>
-          <div className="flex items-center gap-3 mb-2">
-            <h2 className="text-3xl font-bold text-foreground">My Websites</h2>
-            <span className="inline-flex items-center justify-center rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
+          <div className="flex items-center gap-4 mb-2">
+            <h2 className="text-4xl font-bold tracking-tight">
+              My Websites
+            </h2>
+
+            <span
+              className="
+                inline-flex items-center justify-center
+                rounded-full px-4 py-1.5 text-sm font-semibold
+                bg-emerald-500/10 text-emerald-400
+              "
+            >
               {data.length}
             </span>
           </div>
-          <p className="text-muted-foreground">Manage and monitor your web properties</p>
+
+          <p className="text-muted-foreground">
+            Manage and monitor your web properties
+          </p>
         </div>
       </motion.div>
 
-      <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 md:gap-6">
+      <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
         {data.map((website) => (
           <WebsiteCard key={website.id} website={website} />
         ))}

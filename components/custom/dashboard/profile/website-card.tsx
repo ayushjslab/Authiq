@@ -30,9 +30,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 export interface Website {
   id: string;
   name: string;
-  url: string;
-  hostname: string;
-  secretKey: string;
+  websiteUrl: string;
   createdAt: string;
 }
 
@@ -41,7 +39,7 @@ export function WebsiteCard({ website }: { website: Website }) {
   const [loading, setLoading] = useState(false);
   const [confirmName, setConfirmName] = useState("");
   const [name, setName] = useState(website.name);
-  const [redirectUrl, setRedirectUrl] = useState(website.url);
+  const [websiteUrl, setWebsiteUrl] = useState(website.websiteUrl);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [openKeys, setOpenKeys] = useState(false);
@@ -66,12 +64,12 @@ export function WebsiteCard({ website }: { website: Website }) {
     onSuccess: (res) => {
       toast.success(res.data.message || "Deleted successfully");
       queryClient.invalidateQueries({ queryKey: ["websites"] });
-      setLoading(false)
+      setLoading(false);
       setOpenDelete(false);
     },
     onError: () => {
       toast.error("Failed to delete");
-       setLoading(false)
+      setLoading(false);
       setOpenDelete(false);
     },
   });
@@ -85,7 +83,7 @@ export function WebsiteCard({ website }: { website: Website }) {
       setLoading(true);
       return axios.put(`/api/website/${website.id}/edit`, {
         name: name.trim(),
-        redirectUrl: redirectUrl.trim(),
+        websiteUrl: websiteUrl.trim(),
       });
     },
     onSuccess: (res) => {
@@ -123,8 +121,19 @@ export function WebsiteCard({ website }: { website: Website }) {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
+      <div className="absolute inset-0 rounded-2xl bg-emerald-500/10 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
       {/* Card container */}
-      <div className="bg-card border border-border rounded-xl p-6 transition-colors duration-300 hover:border-accent">
+      <div
+        className="
+      relative z-10 rounded-2xl p-6
+      bg-card/60 backdrop-blur-xl
+      border border-emerald-500/20
+      shadow-lg
+      transition-all duration-300
+      group-hover:border-emerald-500/40
+      group-hover:shadow-[0_20px_60px_-25px_rgba(16,185,129,0.6)]
+    "
+      >
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-start gap-4 flex-1">
@@ -141,7 +150,7 @@ export function WebsiteCard({ website }: { website: Website }) {
                 </h3>
 
                 <a
-                  href={website.url}
+                  href={website.websiteUrl}
                   target="_blank"
                   rel="noreferrer"
                   className="text-muted-foreground hover:text-accent transition-colors"
@@ -199,11 +208,11 @@ export function WebsiteCard({ website }: { website: Website }) {
                   {/* Redirect URL Input */}
                   <div className="flex flex-col gap-1">
                     <label className="text-sm text-muted-foreground">
-                      Redirect URL
+                      Website URL
                     </label>
                     <Input
-                      value={redirectUrl}
-                      onChange={(e) => setRedirectUrl(e.target.value)}
+                      value={websiteUrl}
+                      onChange={(e) => setWebsiteUrl(e.target.value)}
                       placeholder="https://example.com/redirect"
                     />
                   </div>
@@ -252,26 +261,6 @@ export function WebsiteCard({ website }: { website: Website }) {
                       onClick={() => copyToClipboard(website.id, "id")}
                     >
                       {copied.id ? (
-                        <Check className="w-4 h-4" />
-                      ) : (
-                        <Copy className="w-4 h-4" />
-                      )}
-                    </Button>
-                  </div>
-
-                  {/* Secret Key */}
-                  <div className="flex items-center justify-between border border-border rounded-md p-2 bg-card/50">
-                    <span className="font-mono text-sm break-all">
-                      {website.secretKey}
-                    </span>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() =>
-                        copyToClipboard(website.secretKey, "secretKey")
-                      }
-                    >
-                      {copied.secretKey ? (
                         <Check className="w-4 h-4" />
                       ) : (
                         <Copy className="w-4 h-4" />
@@ -341,34 +330,34 @@ export function WebsiteCard({ website }: { website: Website }) {
             </Dialog>
           </motion.div>
         </div>
-
+        <div className="h-px bg-linear-to-r from-transparent via-emerald-500/20 to-transparent mb-4" />
         {/* Details */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-border/30">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
-            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+            <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
               Website URL
             </p>
             <a
-              href={website.url}
+              href={website.websiteUrl}
               target="_blank"
               rel="noreferrer"
-              className="text-sm font-mono text-accent hover:underline break-all"
+              className="text-sm font-mono text-emerald-400 hover:underline break-all"
             >
-              {website.url}
+              {website.websiteUrl}
             </a>
           </div>
 
           <div>
-            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
-              Hostname
+            <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
+              Name
             </p>
-            <p className="text-sm font-mono text-foreground">
-              {website.hostname}
+            <p className="text-sm font-medium text-foreground truncate">
+              {website.name}
             </p>
           </div>
 
           <div>
-            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+            <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
               Added On
             </p>
             <p className="text-sm text-foreground">{website.createdAt}</p>

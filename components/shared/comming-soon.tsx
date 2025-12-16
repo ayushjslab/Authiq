@@ -11,7 +11,7 @@ export default function ComingSoonPage() {
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
-          className="absolute -left-1/4 top-0 size-96 rounded-full bg-rose-600/20 blur-[128px]"
+          className="absolute -left-1/4 top-0 size-96 rounded-full bg-emerald-600/20 blur-[128px]"
           animate={{
             scale: [1, 1.2, 1],
             opacity: [0.3, 0.5, 0.3],
@@ -23,7 +23,7 @@ export default function ComingSoonPage() {
           }}
         />
         <motion.div
-          className="absolute -right-1/4 bottom-0 size-96 rounded-full bg-rose-600/20 blur-[128px]"
+          className="absolute -right-1/4 bottom-0 size-96 rounded-full bg-emerald-600/20 blur-[128px]"
           animate={{
             scale: [1.2, 1, 1.2],
             opacity: [0.5, 0.3, 0.5],
@@ -59,7 +59,7 @@ export default function ComingSoonPage() {
               ease: "linear",
             }}
           >
-            <Sparkles className="size-16 text-rose-600" />
+            <Sparkles className="size-16 text-emerald-600" />
           </motion.div>
         </motion.div>
 
@@ -84,7 +84,7 @@ export default function ComingSoonPage() {
                   repeat: Number.POSITIVE_INFINITY,
                   ease: "linear",
                 }}
-                className="bg-linear-to-r from-rose-600 via-rose-500 to-rose-600 bg-size-[200%_100%] bg-clip-text text-transparent"
+                className="bg-linear-to-r from-emerald-600 via-emerald-500 to-emerald-600 bg-size-[200%_100%] bg-clip-text text-transparent"
               >
                 Amazing
               </motion.span>
@@ -132,7 +132,7 @@ export default function ComingSoonPage() {
               }}
               className="flex flex-col items-center"
             >
-              <div className="mb-2 flex size-20 items-center justify-center rounded-xl border border-rose-600/20 bg-rose-600/10 backdrop-blur-sm">
+              <div className="mb-2 flex size-20 items-center justify-center rounded-xl border border-emerald-600/20 bg-emerald-600/10 backdrop-blur-sm">
                 <motion.span
                   key={item.value}
                   initial={{ scale: 1.5, opacity: 0 }}
@@ -141,7 +141,7 @@ export default function ComingSoonPage() {
                     delay: 1 + index * 0.1,
                     duration: 0.5,
                   }}
-                  className="text-3xl font-bold text-rose-600"
+                  className="text-3xl font-bold text-emerald-600"
                 >
                   {item.value}
                 </motion.span>
@@ -167,10 +167,10 @@ export default function ComingSoonPage() {
               <Input
                 type="email"
                 placeholder="Enter your email"
-                className="border-rose-600/20 bg-white/5 pl-10 text-white placeholder:text-zinc-500 focus-visible:border-rose-600 focus-visible:ring-rose-600/20"
+                className="border-emerald-600/20 bg-white/5 pl-10 text-white placeholder:text-zinc-500 focus-visible:border-emerald-600 focus-visible:ring-emerald-600/20"
               />
             </div>
-            <Button className="bg-rose-600 text-white hover:bg-rose-700">Notify Me</Button>
+            <Button className="bg-emerald-600 text-white hover:bg-emerald-700">Notify Me</Button>
           </div>
         </motion.div>
       </div>
