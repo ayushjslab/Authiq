@@ -139,7 +139,7 @@ export function WebsitesList() {
         </div>
       </motion.div>
 
-      <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
         {data.map((website) => (
           <WebsiteCard key={website.id} website={website} />
         ))}

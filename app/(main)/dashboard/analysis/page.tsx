@@ -133,7 +133,7 @@ export default function WebsitesPage() {
           {!isLoading && !websites?.length && <EmptyState />}
 
           {!isLoading && websites && websites.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {websites.map((site, index) => (
                 <motion.div
                   key={site.id}
