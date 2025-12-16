@@ -17,7 +17,7 @@ export default function LoginPage() {
       router.push("/");
     }
   }, [session, router]);
-  if (status === "loading") return <LoadingPage/>;
+  if (status === "loading") return <LoadingPage />;
   return (
     <div className="min-h-screen flex items-center justify-center bg-black text-white p-6">
       <motion.div
@@ -39,7 +39,10 @@ export default function LoginPage() {
           <motion.button
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
-            onClick={() => signIn("google")}
+            onClick={(e) => {
+              e.preventDefault();
+              signIn("google");
+            }}
             className="flex items-center justify-center gap-3 w-full py-3 rounded-xl bg-white text-black font-semibold shadow-md hover:bg-gray-200 transition"
           >
             <FaGoogle size={20} /> Sign in with Google
@@ -48,7 +51,10 @@ export default function LoginPage() {
           <motion.button
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
-            onClick={() => signIn("github")}
+            onClick={(e) => {
+              e.preventDefault();
+              signIn("github");
+            }}
             className="flex items-center justify-center gap-3 w-full py-3 rounded-xl bg-[#111] text-white font-semibold shadow-md border border-[#ff0055] hover:bg-[#1a1a1a] transition"
           >
             <FaGithub size={20} /> Sign in with GitHub
