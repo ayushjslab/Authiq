@@ -45,10 +45,10 @@ export async function GET(request: Request) {
     const allowedOrigins = await getAllowedOrigins();
     const headers = corsHeaders(origin, allowedOrigins);
 
-    const cookieStore = await cookies();
-    const token = cookieStore.get("authiq_token")?.value;
+    const authHeader = request.headers.get("Authorization") || "";
+    const token = authHeader.replace("Bearer ", "");
 
-    console.log("token --->> ",token)
+    console.log("token --->> ", token);
 
     if (!token) {
       return NextResponse.json(
