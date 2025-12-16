@@ -48,7 +48,7 @@ export async function GET(request: Request) {
     const cookieStore = await cookies();
     const token = cookieStore.get("authiq_token")?.value;
 
-    console.log(token)
+    console.log("token --->> ",token)
 
     if (!token) {
       return NextResponse.json(
