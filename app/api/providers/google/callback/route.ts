@@ -18,11 +18,10 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "State missing" }, { status: 400 });
     }
 
-    // Decode the state
     const stateUrl = new URL(decodeURIComponent(stateParam));
 
-    // Get websiteId from query params
     const websiteId = stateUrl.searchParams.get("websiteId");
+    const redirectUrl = stateUrl.searchParams.get("redirectUrl");
 
     if (!code) {
       return NextResponse.json(
@@ -31,7 +30,6 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // Exchange code for tokens
     const tokenResponse = await axios.post(
       "https://oauth2.googleapis.com/token",
       new URLSearchParams({
@@ -79,9 +77,9 @@ export async function GET(req: NextRequest) {
     }
 
     const website = await Website.findById(websiteId)
-      .select("redirectUrl secretKey")
+      .select("secretKey websiteUrl")
       .lean();
-    if (!website?.redirectUrl) {
+    if (!redirectUrl) {
       return NextResponse.json(
         { error: "Redirect URL not found" },
         { status: 404 }
@@ -99,13 +97,7 @@ export async function GET(req: NextRequest) {
       website.secretKey,
       { expiresIn: "2d" }
     );
-    const res = NextResponse.redirect(website.redirectUrl);
-    res.cookies.set("authiq_token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-      maxAge: 2 * 60 * 60 * 24,
-    });
+   const res = NextResponse.redirect(`${redirectUrl}?token=${token}`);
     return res;
   } catch (error: any) {
     console.error(error.response?.data || error.message);

@@ -22,9 +22,11 @@ export async function GET(req: NextRequest) {
 
     // Decode the state
     const stateUrl = new URL(decodeURIComponent(stateParam));
-
     // Get websiteId from query params
     const websiteId = stateUrl.searchParams.get("websiteId");
+    const redirectUrl = stateUrl.searchParams.get("redirectUrl")
+
+    console.log(redirectUrl)
 
     if (!code) {
       return NextResponse.json(
@@ -61,8 +63,6 @@ export async function GET(req: NextRequest) {
 
     const primaryEmail = emailsResponse.data.find((e: any) => e.primary)?.email;
 
-    console.log(userResponse);
-
     const user = {
       id: userResponse.data.id,
       name: userResponse.data.name,
@@ -95,23 +95,16 @@ export async function GET(req: NextRequest) {
     }
 
     const website = await Website.findById(websiteId)
-      .select("redirectUrl secretKey")
+      .select("secretKey websiteUrl")
       .lean();
-    if (!website?.redirectUrl) {
+    if (!redirectUrl) {
       return NextResponse.json(
         { error: "Redirect URL not found" },
         { status: 404 }
       );
     }
     const token = jwt.sign(user, website.secretKey, { expiresIn: "2d" });
-    const res = NextResponse.redirect(website.redirectUrl);
-
-    res.cookies.set("authiq_token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-      maxAge: 2 * 60 * 60 * 24,
-    });
+    const res = NextResponse.redirect(`${redirectUrl}?token=${token}`);
     return res;
   } catch (error: any) {
     console.error(error.response?.data || error.message);
