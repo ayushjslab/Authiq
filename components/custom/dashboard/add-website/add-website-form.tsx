@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Sparkles, Globe, Link2 } from "lucide-react";
 import axios from "axios";
 import { toast } from "sonner";
-import { getUserFromJWT } from "@/hooks/getUser";
+import { useSession } from "next-auth/react";
 
 interface AddWebsitePageProps {
   onSuccess: (data: {
@@ -29,8 +29,9 @@ export default function AddWebsitePage({ onSuccess }: AddWebsitePageProps) {
     redirectUrl?: string;
   }>({});
 
-  // Only render after client mount
   useEffect(() => setMounted(true), []);
+
+  const {data: session} = useSession();
 
   const formatUrl = useCallback((u: string) => {
     if (!u) return u;
@@ -70,15 +71,13 @@ export default function AddWebsitePage({ onSuccess }: AddWebsitePageProps) {
     try {
       setLoading(true);
       const normalizedUrl = formatUrl(url);
-      const data = await getUserFromJWT();
-
-      if (!data?.id) {
+      if (!session?.user?.id) {
         toast.error("User not authenticated.");
         return;
       }
 
       const res = await axios.post(`/api/website/add`, {
-        userId: data.id,
+        userId: session.user.id,
         websiteUrl: normalizedUrl,
         name,
       });

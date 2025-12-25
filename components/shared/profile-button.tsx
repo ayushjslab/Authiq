@@ -3,16 +3,13 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { useSession } from "next-auth/react";
-import { toast } from "sonner";
-import axios from "axios";
-import { useMutation } from "@tanstack/react-query";
+import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function ProfileButton() {
   const [open, setOpen] = useState(false);
 
-  const { data: session } = useSession();
+  const { data: session} = useSession();
 
   if (!session || !session.user) {
     return null;
@@ -21,26 +18,12 @@ export default function ProfileButton() {
   const { user } = session;
   const router = useRouter();
 
-  const logoutMutation = useMutation({
-    mutationFn: async () => {
-      return axios.post("/api/logout");
-    },
-    onSuccess: (res) => {
-      toast.success(res.data.message || "Logged out");
-      window.location.reload();
-    },
-    onError: () => {
-      toast.error("Internal server error");
-    },
-  });
-
-  const handleLogout = () => {
-    logoutMutation.mutate();
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: "/login" });
   };
 
   return (
     <div className="relative select-none">
-      {/* Button */}
       <motion.button
         onClick={() => setOpen(!open)}
         whileHover={{ scale: 1.03 }}
@@ -60,13 +43,11 @@ export default function ProfileButton() {
           <p className="text-sm font-semibold text-foreground">{user.name}</p>
           <p className="text-xs text-muted-foreground">{user.email}</p>
         </div>
-
         <motion.div animate={{ rotate: open ? 180 : 0 }}>
           <ChevronDown className="w-4 h-4 text-muted-foreground" />
         </motion.div>
       </motion.button>
 
-      {/* Dropdown */}
       <AnimatePresence>
         {open && (
           <motion.div

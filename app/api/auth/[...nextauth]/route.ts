@@ -16,7 +16,7 @@ const handler = NextAuth({
   callbacks: {
     async signIn({ user }) {
       try {
-        await fetch(`${process.env.HOME_URL}/api/login`, {
+        const response = await fetch(`${process.env.HOME_URL}/api/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -25,11 +25,29 @@ const handler = NextAuth({
             image: user.image,
           }),
         });
+
+        if (response.ok) {
+          const data = await response.json();
+          user.id = data.user.id;
+        }
       } catch (err) {
         console.error("Error calling /api/login:", err);
       }
-
       return true;
+    },
+    async jwt({ token, user }) {
+      if (user?.id) {
+        token.id = user.id;
+      }
+
+      return token;
+    },
+    async session({ session, token }) {
+      if (token?.id) {
+        session.user.id = token.id as string;
+      }
+
+      return session;
     },
   },
   secret: process.env.JWT_SECRET,
