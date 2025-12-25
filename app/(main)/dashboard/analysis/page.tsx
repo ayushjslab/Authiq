@@ -3,15 +3,15 @@
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 import { UrlPreview } from "@/components/ui/link-preview"
-import { getUserFromJWT } from "@/hooks/getUser"
 import { motion, MotionConfig } from "framer-motion"
 import { useState } from "react"
 import { Check, Copy, Plus, ExternalLink } from "lucide-react"
 import Link from "next/link"
 import { redirect, useRouter } from "next/navigation"
 import { BsGraphUpArrow } from "react-icons/bs";
+import { useSession } from "next-auth/react"
 export type Website = {
-  id: string
+  _id: string
   websiteUrl: string
   name: string
 }
@@ -104,11 +104,11 @@ function EmptyState() {
 }
 
 export default function WebsitesPage() {
+  const {data: session} = useSession();
   const { data: websites, isLoading } = useQuery({
     queryKey: ["websites"],
     queryFn: async () => {
-      const user = await getUserFromJWT()
-      const res = await axios.get(`/api/website/fetch?userId=${user?.id}`)
+      const res = await axios.get(`/api/website/fetch?userId=${session?.user?.id}`)
       return res.data.data as Website[]
     },
   })
@@ -136,7 +136,7 @@ export default function WebsitesPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {websites.map((site, index) => (
                 <motion.div
-                  key={site.id}
+                  key={site._id}
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.08 }}
@@ -180,15 +180,15 @@ export default function WebsitesPage() {
                         <p className="text-muted-foreground font-medium">Website ID</p>
                         <div className="flex items-center gap-2">
                           <code className="flex-1 text-xs bg-muted px-2 py-1 rounded font-mono truncate">
-                            {site.id}
+                            {site._id}
                           </code>
-                          <CopyButton text={site.id} />
+                          <CopyButton text={site._id} />
                         </div>
                       </div>
                     </div>
 
                     <Link
-                      href={`/dashboard/analysis/${site.id}`}
+                      href={`/dashboard/analysis/${site._id}`}
                       className="flex items-center justify-center gap-2
                       rounded-xl py-2.5
                       bg-linear-to-r from-emerald-500 to-emerald-600

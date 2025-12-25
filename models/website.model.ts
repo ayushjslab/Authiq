@@ -1,14 +1,15 @@
-// models/Website.ts
-import { Schema, model, models, Types, ObjectId, Document } from "mongoose";
+import { Schema, model, models, Types, Document } from "mongoose";
 import crypto from "crypto";
 
 export interface IWebsite extends Document {
-  createdAt: string;
+  createdAt: Date;
+  updatedAt: Date;
   _id: Types.ObjectId;
   user: Types.ObjectId;
   name: string;
   websiteUrl: string;
   secretKey: string;
+  websiteUsers: Types.ObjectId[];
 }
 
 const WebsiteSchema = new Schema<IWebsite>(
@@ -26,12 +27,19 @@ const WebsiteSchema = new Schema<IWebsite>(
     websiteUrl: {
       type: String,
       required: true,
+      trim: true,
     },
     secretKey: {
       type: String,
       unique: true,
       default: () => crypto.randomBytes(32).toString("hex"),
     },
+    websiteUsers: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "WebsiteUser",
+      },
+    ],
   },
   { timestamps: true }
 );

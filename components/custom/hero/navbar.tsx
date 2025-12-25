@@ -8,12 +8,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import ProfileButton from "@/components/shared/profile-button";
 import { useSession } from "next-auth/react";
-import axios from "axios";
 
 export default function Navbar() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const { data: session, status } = useSession();
+  const { data: session} = useSession();
 
   const navItems = [
     { label: "Reviews", href: "#reviews" },
@@ -21,19 +20,6 @@ export default function Navbar() {
     { label: "Pricing", href: "#pricing" },
     { label: "Docs", href: "/docs" },
   ];
-
-  useEffect(() => {
-    if (status !== "authenticated") return;
-    async function setCookie () {
-      try {
-        const res = await axios.post(`/api/set-cookies`, {email: session?.user?.email})
-        console.log(res.data)
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    setCookie();
-  }, [session]);
 
   return (
     <motion.nav
@@ -73,7 +59,6 @@ export default function Navbar() {
           ))}
         </div>
 
-        {/* Sign In Button (Desktop) */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -93,7 +78,6 @@ export default function Navbar() {
           )}
         </motion.div>
 
-        {/* Mobile Menu Button */}
         <button
           onClick={() => setOpen(!open)}
           className="md:hidden p-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition"
@@ -106,7 +90,6 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile Menu Drawer */}
       <motion.div
         initial={{ height: 0, opacity: 0 }}
         animate={

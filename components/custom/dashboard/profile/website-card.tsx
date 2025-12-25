@@ -28,7 +28,7 @@ import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export interface Website {
-  id: string;
+  _id: string;
   name: string;
   websiteUrl: string;
   createdAt: string;
@@ -59,7 +59,7 @@ export function WebsiteCard({ website }: { website: Website }) {
   const deleteMutation = useMutation({
     mutationFn: async () => {
       setLoading(true);
-      return axios.delete(`/api/website/${website.id}/delete`);
+      return axios.delete(`/api/website/${website._id}/delete`);
     },
     onSuccess: (res) => {
       toast.success(res.data.message || "Deleted successfully");
@@ -81,7 +81,7 @@ export function WebsiteCard({ website }: { website: Website }) {
   const editMutation = useMutation({
     mutationFn: async () => {
       setLoading(true);
-      return axios.put(`/api/website/${website.id}/edit`, {
+      return axios.put(`/api/website/${website._id}/edit`, {
         name: name.trim(),
         websiteUrl: websiteUrl.trim(),
       });
@@ -253,12 +253,12 @@ export function WebsiteCard({ website }: { website: Website }) {
                   {/* API ID */}
                   <div className="flex items-center justify-between border border-border rounded-md p-2 bg-card/50">
                     <span className="font-mono text-sm break-all">
-                      {website.id}
+                      {website._id}
                     </span>
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => copyToClipboard(website.id, "id")}
+                      onClick={() => copyToClipboard(website._id, "id")}
                     >
                       {copied.id ? (
                         <Check className="w-4 h-4" />
