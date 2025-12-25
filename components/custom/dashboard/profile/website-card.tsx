@@ -26,6 +26,7 @@ import axios from "axios";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 
 export interface Website {
   _id: string;
@@ -56,10 +57,16 @@ export function WebsiteCard({ website }: { website: Website }) {
     setTimeout(() => setCopied({ ...copied, [field]: false }), 2000);
   };
 
+  const { data } = useSession();
+
   const deleteMutation = useMutation({
     mutationFn: async () => {
       setLoading(true);
-      return axios.delete(`/api/website/${website._id}/delete`);
+      return axios.delete(`/api/website/${website._id}/delete`, {
+        data: {
+          userId: data?.user.id,
+        },
+      });
     },
     onSuccess: (res) => {
       toast.success(res.data.message || "Deleted successfully");
