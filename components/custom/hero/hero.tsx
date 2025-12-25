@@ -3,8 +3,6 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Zap, ShieldCheck } from "lucide-react";
-import { getUserFromJWT } from "@/hooks/getUser";
-import { useEffect } from "react";
 import { redirect } from "next/navigation";
 
 export default function Hero() {
@@ -30,7 +28,6 @@ export default function Hero() {
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden pt-10">
-      {/* Soft background glow */}
       <div className="absolute inset-0 blur-[160px] opacity-30">
         <div className="absolute top-10 left-20 w-96 h-96 bg-primary/30 rounded-full" />
         <div className="absolute bottom-10 right-20 w-[500px] h-[500px] bg-secondary/20 rounded-full" />
@@ -42,7 +39,6 @@ export default function Hero() {
         animate="visible"
         className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 max-w-7xl mx-auto px-6 sm:px-10"
       >
-        {/* LEFT TEXT SECTION */}
         <div className="flex flex-col justify-center">
           <motion.span
             variants={itemVariants}
@@ -69,7 +65,6 @@ export default function Hero() {
             enterprise-grade security — wrapped in a developer-friendly package.
           </motion.p>
 
-          {/* CTA BUTTONS */}
           <motion.div
             variants={itemVariants}
             className="mt-8 flex flex-col sm:flex-row gap-4"
@@ -103,7 +98,6 @@ export default function Hero() {
             </Button>
           </motion.div>
 
-          {/* Stats */}
           <motion.div
             variants={itemVariants}
             className="mt-12 grid grid-cols-3 gap-6 max-w-sm"
@@ -121,7 +115,6 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* RIGHT: ANIMATED VISUAL SIDE */}
         <div className="relative flex items-center justify-center">
           {/* Glow Orb */}
           <motion.div

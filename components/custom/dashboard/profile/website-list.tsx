@@ -4,8 +4,8 @@ import { motion } from "framer-motion"
 import { type Website, WebsiteCard } from "./website-card"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
-import { getUserFromJWT } from "@/hooks/getUser"
 import { Globe, Loader2 } from "lucide-react"
+import { useSession } from "next-auth/react"
 
 export function WebsitesList() {
   const containerVariants = {
@@ -25,11 +25,12 @@ export function WebsitesList() {
     },
   }
 
+  const {data: session} = useSession();
+
   const { data, isLoading } = useQuery({
     queryKey: ["websites"],
     queryFn: async () => {
-      const user = await getUserFromJWT()
-      const res = await axios.get(`/api/website/fetch?userId=${user?.id}`)
+      const res = await axios.get(`/api/website/fetch?userId=${session?.user?.id}`)
       return res.data.data as Website[]
     },
   })
