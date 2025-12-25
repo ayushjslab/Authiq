@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import { LuLayoutDashboard } from "react-icons/lu";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,7 +19,7 @@ export default function Sidebar() {
   const router = useRouter();
 
   const menuItems = [
-    { icon: Palette, label: "Dashboard", slug: "/dashboard" },
+    { icon: LuLayoutDashboard , label: "Dashboard", slug: "/dashboard" },
     { icon: Plus, label: "Add website", slug: "/dashboard/add-website" },
     { icon: BarChart3, label: "Analysis", slug: "/dashboard/analysis" },
     { icon: User, label: "Account", slug: "/dashboard/account" },

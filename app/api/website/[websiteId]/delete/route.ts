@@ -7,7 +7,7 @@ import { Types } from "mongoose";
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { websiteId: string } }
+  { params }: { params: Promise<{ websiteId: string } > }
 ) {
   try {
     await connectDB();
