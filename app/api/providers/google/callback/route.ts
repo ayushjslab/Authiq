@@ -14,8 +14,8 @@ export async function GET(req: NextRequest) {
     const code = url.searchParams.get("code");
     const stateParam = url.searchParams.get("state");
 
-    if (!stateParam) {
-      return NextResponse.json({ error: "State missing" }, { status: 400 });
+    if (!code || !stateParam) {
+      return NextResponse.json({ error: "Invalid request" }, { status: 400 });
     }
 
     const stateUrl = new URL(decodeURIComponent(stateParam));
@@ -23,11 +23,8 @@ export async function GET(req: NextRequest) {
     const websiteId = stateUrl.searchParams.get("websiteId");
     const redirectUrl = stateUrl.searchParams.get("redirectUrl");
 
-    if (!code) {
-      return NextResponse.json(
-        { error: "Authorization code missing" },
-        { status: 400 }
-      );
+    if (!websiteId || !redirectUrl) {
+      return NextResponse.json({ error: "Invalid state" }, { status: 400 });
     }
 
     const tokenResponse = await axios.post(
@@ -45,46 +42,51 @@ export async function GET(req: NextRequest) {
     const { access_token } = tokenResponse.data;
 
     // Fetch user info
-    const userResponse = await axios.get(
+      const { data: user } = await axios.get(
       "https://www.googleapis.com/oauth2/v3/userinfo",
       {
         headers: { Authorization: `Bearer ${access_token}` },
       }
     );
 
-    const user = userResponse.data;
-    const existWebsiteUser = await WebsiteUser.findOne({
-      website: websiteId,
-      email: user.email,
-    });
+    const email = user.email.toLowerCase();
 
-    if (existWebsiteUser) {
-      existWebsiteUser.lastLoginAt = new Date();
-      await existWebsiteUser.save();
-    }
-
-    if (!existWebsiteUser) {
-      const resData = await WebsiteUser.create({
+    const websiteUser = await WebsiteUser.findOneAndUpdate(
+      {
         website: websiteId,
-        provider: "google",
-        providerId: user.sub,
-        lastLoginAt: Date.now(),
-        emailVerified: user.email_verified,
-        name: user.name,
-        email: user.email,
-        image: user.picture,
-      });
-    }
+        email,
+      },
+      {
+        $set: {
+          lastLoginAt: new Date(),
+          name: user.name,
+          image: user.picture,
+          emailVerified: user.email_verified,
+        },
+        $setOnInsert: {
+          provider: "google",
+          providerId: user.sub,
+          website: websiteId,
+          email,
+        },
+      },
+      {
+        new: true,
+        upsert: true,
+      }
+    );
 
     const website = await Website.findById(websiteId)
-      .select("secretKey websiteUrl")
+      .select("secretKey")
       .lean();
-    if (!redirectUrl) {
-      return NextResponse.json(
-        { error: "Redirect URL not found" },
-        { status: 404 }
-      );
+
+    if (!website) {
+      return NextResponse.json({ error: "Website not found" }, { status: 404 });
     }
+
+    await Website.findByIdAndUpdate(websiteId, {
+      $addToSet: { websiteUsers: websiteUser._id },
+    });
 
     const token = jwt.sign(
       {
@@ -95,10 +97,9 @@ export async function GET(req: NextRequest) {
         provider: "google",
       },
       website.secretKey,
-      { expiresIn: "2d" }
+      { expiresIn: "4h" }
     );
-   const res = NextResponse.redirect(`${redirectUrl}?token=${token}`);
-    return res;
+   return NextResponse.redirect(`${redirectUrl}?token=${token}`);
   } catch (error: any) {
     console.error(error.response?.data || error.message);
     return NextResponse.json({ error: "Google login failed" }, { status: 500 });

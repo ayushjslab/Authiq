@@ -53,6 +53,8 @@ const WebsiteUserSchema = new Schema<IWebsiteUser>(
   { timestamps: true }
 );
 
+WebsiteUserSchema.index({ website: 1, email: 1 }, { unique: true });
+
 const WebsiteUser =
   models.WebsiteUser || model<IWebsiteUser>("WebsiteUser", WebsiteUserSchema);
 

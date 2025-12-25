@@ -4,108 +4,104 @@ import jwt from "jsonwebtoken";
 import WebsiteUser from "@/models/websiteUsers.model";
 import Website from "@/models/website.model";
 
-const CLIENT_ID = process.env.GITHUB_CLIENT_ID!;
-const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET!;
-const REDIRECT_URI = process.env.GITHUB_REDIRECT_URI!;
-const JWT_SECRET = process.env.JWT_SECRET!;
-
 export async function GET(req: NextRequest) {
   try {
     const url = new URL(req.url);
     const code = url.searchParams.get("code");
-
     const stateParam = url.searchParams.get("state");
 
-    if (!stateParam) {
-      return NextResponse.json({ error: "State missing" }, { status: 400 });
+    if (!code || !stateParam) {
+      return NextResponse.json({ error: "Invalid request" }, { status: 400 });
     }
 
-    // Decode the state
     const stateUrl = new URL(decodeURIComponent(stateParam));
-    // Get websiteId from query params
     const websiteId = stateUrl.searchParams.get("websiteId");
-    const redirectUrl = stateUrl.searchParams.get("redirectUrl")
+    const redirectUrl = stateUrl.searchParams.get("redirectUrl");
 
-    console.log(redirectUrl)
-
-    if (!code) {
-      return NextResponse.json(
-        { error: "Authorization code missing" },
-        { status: 400 }
-      );
+    if (!websiteId || !redirectUrl) {
+      return NextResponse.json({ error: "Invalid state" }, { status: 400 });
     }
 
-    // Exchange code for access token
     const tokenResponse = await axios.post(
       "https://github.com/login/oauth/access_token",
       {
-        client_id: CLIENT_ID,
-        client_secret: CLIENT_SECRET,
+        client_id: process.env.GITHUB_CLIENT_ID!,
+        client_secret: process.env.GITHUB_CLIENT_SECRET!,
         code,
-        redirect_uri: REDIRECT_URI,
+        redirect_uri: process.env.GITHUB_REDIRECT_URI!,
       },
       { headers: { Accept: "application/json" } }
     );
 
     const { access_token } = tokenResponse.data;
 
-    // Fetch user info
-    const userResponse = await axios.get("https://api.github.com/user", {
+    const { data: ghUser } = await axios.get("https://api.github.com/user", {
       headers: { Authorization: `Bearer ${access_token}` },
     });
 
-    const emailsResponse = await axios.get(
+    const { data: emails } = await axios.get(
       "https://api.github.com/user/emails",
       {
         headers: { Authorization: `Bearer ${access_token}` },
       }
     );
+    const primaryEmail =
+      emails.find((e: any) => e.primary && e.verified)?.email ||
+      emails.find((e: any) => e.verified)?.email;
 
-    const primaryEmail = emailsResponse.data.find((e: any) => e.primary)?.email;
-
-    const user = {
-      id: userResponse.data.id,
-      name: userResponse.data.name,
-      email: primaryEmail,
-      image: userResponse.data.avatar_url,
-      provider: "github",
-    };
-
-    const existWebsiteUser = await WebsiteUser.findOne({
-      website: websiteId,
-      email: user.email,
-    });
-
-    if (existWebsiteUser) {
-      existWebsiteUser.lastLoginAt = new Date();
-      await existWebsiteUser.save();
-    }
-
-    if (!existWebsiteUser) {
-      const resData = await WebsiteUser.create({
-        website: websiteId,
-        name: user.name,
-        email: user.email,
-        image: user.image,
-        provider: "github",
-        emailVerified: true,
-        providerId: user.id,
-        lastLoginAt: Date.now(),
-      });
-    }
-
-    const website = await Website.findById(websiteId)
-      .select("secretKey websiteUrl")
-      .lean();
-    if (!redirectUrl) {
+    if (!primaryEmail) {
       return NextResponse.json(
-        { error: "Redirect URL not found" },
-        { status: 404 }
+        { error: "GitHub email not available" },
+        { status: 400 }
       );
     }
-    const token = jwt.sign(user, website.secretKey, { expiresIn: "2d" });
-    const res = NextResponse.redirect(`${redirectUrl}?token=${token}`);
-    return res;
+
+    const email = primaryEmail.toLowerCase();
+
+    const websiteUser = await WebsiteUser.findOneAndUpdate(
+      { website: websiteId, email },
+      {
+        $set: {
+          lastLoginAt: new Date(),
+          name: ghUser.name || ghUser.login,
+          image: ghUser.avatar_url,
+          emailVerified: true,
+        },
+        $setOnInsert: {
+          provider: "github",
+          providerId: ghUser.id.toString(),
+          website: websiteId,
+          email,
+        },
+      },
+      { new: true, upsert: true }
+    );
+
+    const website = await Website.findById(websiteId)
+      .select("secretKey")
+      .lean();
+
+    if (!website) {
+      return NextResponse.json({ error: "Website not found" }, { status: 404 });
+    }
+
+    await Website.findByIdAndUpdate(websiteId, {
+      $addToSet: { websiteUsers: websiteUser._id },
+    });
+
+    const token = jwt.sign(
+      {
+        id: websiteUser._id,
+        email: websiteUser.email,
+        name: websiteUser.name,
+        image: websiteUser.image,
+        provider: "github",
+        websiteId,
+      },
+      website.secretKey,
+      { expiresIn: "4h" }
+    );
+    return NextResponse.redirect(`${redirectUrl}?token=${token}`);
   } catch (error: any) {
     console.error(error.response?.data || error.message);
     return NextResponse.json({ error: "GitHub login failed" }, { status: 500 });
