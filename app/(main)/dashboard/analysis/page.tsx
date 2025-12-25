@@ -1,29 +1,29 @@
-"use client"
+"use client";
 
-import { useQuery } from "@tanstack/react-query"
-import axios from "axios"
-import { UrlPreview } from "@/components/ui/link-preview"
-import { motion, MotionConfig } from "framer-motion"
-import { useState } from "react"
-import { Check, Copy, Plus, ExternalLink } from "lucide-react"
-import Link from "next/link"
-import { redirect, useRouter } from "next/navigation"
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { UrlPreview } from "@/components/ui/link-preview";
+import { motion, MotionConfig } from "framer-motion";
+import { useState } from "react";
+import { Check, Copy, Plus, ExternalLink } from "lucide-react";
+import Link from "next/link";
+import { redirect, useRouter } from "next/navigation";
 import { BsGraphUpArrow } from "react-icons/bs";
-import { useSession } from "next-auth/react"
+import { useSession } from "next-auth/react";
 export type Website = {
-  _id: string
-  websiteUrl: string
-  name: string
-}
+  _id: string;
+  websiteUrl: string;
+  name: string;
+};
 
 function CopyButton({ text }: { text: string }) {
-  const [copied, setCopied] = useState(false)
+  const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(text)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
+    await navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <button
@@ -43,7 +43,7 @@ function CopyButton({ text }: { text: string }) {
         </>
       )}
     </button>
-  )
+  );
 }
 
 function LoadingSkeleton() {
@@ -64,11 +64,11 @@ function LoadingSkeleton() {
         </div>
       ))}
     </div>
-  )
+  );
 }
 
 function EmptyState() {
-  const router = useRouter()
+  const router = useRouter();
 
   return (
     <motion.div
@@ -100,20 +100,25 @@ function EmptyState() {
         Add Website
       </button>
     </motion.div>
-  )
+  );
 }
 
 export default function WebsitesPage() {
-  const {data: session} = useSession();
-  const { data: websites, isLoading } = useQuery({
-    queryKey: ["websites"],
-    queryFn: async () => {
-      const res = await axios.get(`/api/website/fetch?userId=${session?.user?.id}`)
-      return res.data.data as Website[]
-    },
-  })
+  const { data: session, status } = useSession();
+  const userId = session?.user?.id;
 
-  console.log(websites)
+  const { data: websites, isLoading } = useQuery({
+    queryKey: ["websites", userId],
+    enabled: !!userId,
+    queryFn: async () => {
+      const res = await axios.get(`/api/website/fetch?userId=${userId}`);
+      return res.data.data as Website[];
+    },
+  });
+
+  if (status === "loading" || isLoading) {
+    return <LoadingSkeleton />;
+  }
 
   return (
     <MotionConfig reducedMotion="user">
@@ -161,7 +166,10 @@ export default function WebsitesPage() {
                       <h2 className="text-xl font-bold truncate">
                         {site.name}
                       </h2>
-                      <ExternalLink onClick={() => redirect(site.websiteUrl)} className="w-4 h-4 text-muted-foreground shrink-0 cursor-pointer" />
+                      <ExternalLink
+                        onClick={() => window.open(site.websiteUrl, "_blank")}
+                        className="w-4 h-4 text-muted-foreground shrink-0 cursor-pointer"
+                      />
                     </div>
 
                     <div className="space-y-3 text-sm">
@@ -170,6 +178,7 @@ export default function WebsitesPage() {
                         <a
                           href={site.websiteUrl}
                           target="_blank"
+                          rel="noopener noreferrer"
                           className="text-emerald-500 hover:text-emerald-600 transition truncate"
                         >
                           {site.websiteUrl}
@@ -177,7 +186,9 @@ export default function WebsitesPage() {
                       </div>
 
                       <div>
-                        <p className="text-muted-foreground font-medium">Website ID</p>
+                        <p className="text-muted-foreground font-medium">
+                          Website ID
+                        </p>
                         <div className="flex items-center gap-2">
                           <code className="flex-1 text-xs bg-muted px-2 py-1 rounded font-mono truncate">
                             {site._id}
@@ -196,7 +207,7 @@ export default function WebsitesPage() {
                       text-white font-medium shadow-lg shadow-emerald-500/30 transition"
                     >
                       View Analytics
-                      <BsGraphUpArrow   className="w-4 h-4" />
+                      <BsGraphUpArrow className="w-4 h-4" />
                     </Link>
                   </div>
                 </motion.div>
@@ -206,5 +217,5 @@ export default function WebsitesPage() {
         </div>
       </div>
     </MotionConfig>
-  )
+  );
 }

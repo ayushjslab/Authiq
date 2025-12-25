@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import User from "@/models/user.model";
-import Website from "@/models/website.model"; 
+import Website from "@/models/website.model";
 
 export async function GET(req: NextRequest) {
   try {
     await connectDB();
+
+    const _ = Website;
 
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId");
@@ -24,7 +26,7 @@ export async function GET(req: NextRequest) {
         select: "name websiteUrl createdAt _id",
         options: { sort: { createdAt: -1 } },
       })
-      .lean(); 
+      .lean();
 
     if (!user) {
       return NextResponse.json(
