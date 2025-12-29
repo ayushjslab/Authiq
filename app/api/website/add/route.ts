@@ -24,7 +24,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    if (user.credit <= 0) {
+    if (user.credit <= 0 && user.subscription === "free") {
       return NextResponse.json({ error: "Not enough credit" }, { status: 403 });
     }
 
@@ -34,10 +34,31 @@ export async function POST(req: Request) {
       websiteUrl,
     });
 
-    await User.findByIdAndUpdate(userId, {
-      $inc: { credit: -1 },
-      $push: { websites: newWebsite._id },
-    });
+    await User.findByIdAndUpdate(
+      userId,
+      [
+        {
+          $set: {
+            credit: {
+              $cond: [
+                {
+                  $and: [
+                    { $eq: ["$subscription", "free"] },
+                    { $gt: ["$credit", 0] },
+                  ],
+                },
+                { $subtract: ["$credit", 1] },
+                "$credit",
+              ],
+            },
+            websites: {
+              $concatArrays: [{ $ifNull: ["$websites", []] }, [newWebsite._id]],
+            },
+          },
+        },
+      ],
+      { new: true, updatePipeline: true }
+    );
 
     return NextResponse.json(
       {

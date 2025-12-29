@@ -7,6 +7,7 @@ export interface IWebsite extends Document {
   _id: Types.ObjectId;
   user: Types.ObjectId;
   name: string;
+  isExpired: boolean;
   websiteUrl: string;
   secretKey: string;
   websiteUsers: Types.ObjectId[];
@@ -23,6 +24,10 @@ const WebsiteSchema = new Schema<IWebsite>(
       type: String,
       required: true,
       trim: true,
+    },
+    isExpired: {
+      type: Boolean,
+      default: false
     },
     websiteUrl: {
       type: String,

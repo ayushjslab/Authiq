@@ -36,10 +36,10 @@ const handler = NextAuth({
       return true;
     },
     async jwt({ token, user }) {
+      console.log(user)
       if (user?.id) {
         token.id = user.id;
       }
-
       return token;
     },
     async session({ session, token }) {

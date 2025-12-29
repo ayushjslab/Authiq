@@ -30,9 +30,11 @@ export function PricingCard({
   const handleCheckout = async () => {
     if (!session?.user?.id) {
       router.push("/login");
+      return;
     }
     const params = new URLSearchParams();
     params.append("products[]", process.env.NEXT_PUBLIC_POLAR_PRODUCT_ID!);
+    params.append("userId", session?.user?.id);
 
     window.location.href = `/api/checkout?${params.toString()}`;
   };
@@ -94,7 +96,7 @@ export function PricingCard({
             ? "bg-emerald-500 hover:bg-emerald-600 text-black shadow-lg shadow-emerald-500/20"
             : "bg-white hover:bg-zinc-200 text-black"
         )}
-        onClick={() => (isPro ? handleCheckout() : {})}
+        onClick={() => (isPro ? handleCheckout() : router.push("/dashboard"))}
       >
         Get Started
       </Button>

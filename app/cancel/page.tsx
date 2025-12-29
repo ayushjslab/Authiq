@@ -1,3 +1,4 @@
+"use client"
 import { motion } from "framer-motion";
 
 export default function CancelPage() {
@@ -9,7 +10,6 @@ export default function CancelPage() {
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="relative max-w-md w-full rounded-2xl border border-emerald-600/20 bg-black/80 p-8 text-center"
       >
-        {/* subtle gradient edge */}
         <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-emerald-600/10 to-transparent" />
 
         <motion.div
