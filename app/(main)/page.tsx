@@ -5,7 +5,6 @@ import Hero from "@/components/custom/hero/hero"
 import HowToUse from "@/components/custom/hero/how-to-use"
 import Reviews from "@/components/custom/hero/reviews"
 import Footer from "@/components/custom/hero/footer"
-import { useSession } from "next-auth/react"
 
 export default function Home() {
   return (

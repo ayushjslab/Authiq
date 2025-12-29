@@ -17,7 +17,6 @@ export async function GET(
 
     const skip = (page - 1) * limit;
 
-    // Fetch paginated users
     const users = await WebsiteUser.find({ website: websiteId })
       .skip(skip)
       .limit(limit)

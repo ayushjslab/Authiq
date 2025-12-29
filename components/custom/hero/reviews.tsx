@@ -6,33 +6,33 @@ import { Star } from "lucide-react"
 export default function Reviews() {
   const reviews = [
     {
-      name: "Sarah Johnson",
-      role: "CTO, TechCorp",
-      image: "👩‍💼",
+      name: "Vikas Babu",
+      role: "Frontend Developer",
+      image: "https://media.licdn.com/dms/image/v2/D5603AQF8XC_aD97Blw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1729187054262?e=2147483647&v=beta&t=YALxKQe-C0GTgWGTom_Umwg3okzlx4HSqWCgL3GPVqo",
       rating: 5,
       text: "Authiq reduced our authentication setup time from 3 weeks to just 2 hours. The documentation is incredible and support is lightning fast.",
       company: "TechCorp",
     },
     {
-      name: "Marcus Chen",
-      role: "Founder, StartupXYZ",
+      name: "Akash Yadav",
+      role: "Backend Developer",
       image: "👨‍💻",
       rating: 5,
       text: "Finally, authentication that doesn't feel like a chore to implement. Authiq is the real deal. 10/10 would recommend.",
       company: "StartupXYZ",
     },
     {
-      name: "Emma Williams",
-      role: "Lead Developer, CloudNet",
-      image: "👩‍🔬",
+      name: "Ayush Saini",
+      role: "Full Stack Developer",
+      image: "https://avatars.githubusercontent.com/u/166295238?v=4",
       rating: 5,
       text: "The security features are top-notch and the API is so intuitive. We saved thousands in development hours using Authiq.",
       company: "CloudNet",
     },
     {
-      name: "David Rodriguez",
-      role: "VP Engineering, FinanceHub",
-      image: "👨‍💼",
+      name: "Kapil Paliwal",
+      role: "Full Stack Developer",
+      image: "https://moreseo.net/_next/image?url=https%3A%2F%2Fres.cloudinary.com%2Fds8zesbaa%2Fimage%2Fupload%2Ff_auto%2Cq_auto%2Fv1%2Fmywaitlist_site%2Fq7gdvsikvmxptvrynsxq&w=256&q=75",
       rating: 5,
       text: "Enterprise-grade reliability with a consumer-grade simplicity. This is exactly what we've been looking for.",
       company: "FinanceHub",
@@ -71,7 +71,7 @@ export default function Reviews() {
         >
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground">
             What Our Users{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Say</span>
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Say</span>
           </h2>
           <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto">
             Trusted by thousands of developers worldwide.
@@ -113,7 +113,7 @@ export default function Reviews() {
               {/* Author Info */}
               <div className="flex items-center gap-3 pt-6 border-t border-border">
                 <motion.div className="text-3xl" whileHover={{ scale: 1.2 }} transition={{ duration: 0.3 }}>
-                  {review.image}
+                 <img src={review.image} alt={review.name} className="w-14 h-14 rounded-full" />
                 </motion.div>
                 <div>
                   <p className="font-semibold text-foreground text-sm">{review.name}</p>

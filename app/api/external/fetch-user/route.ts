@@ -1,4 +1,3 @@
-// app/api/fetch/user/route.ts
 import { NextResponse } from "next/server";
 import WebsiteUser from "@/models/websiteUsers.model";
 import { connectDB } from "@/lib/db";

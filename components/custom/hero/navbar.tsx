@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ShieldHalf, Menu, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import ProfileButton from "@/components/shared/profile-button";
 import { useSession } from "next-auth/react";
@@ -71,7 +71,7 @@ export default function Navbar() {
             <Button
               variant="outline"
               onClick={() => router.push("/login")}
-              className="border-primary text-primary hover:bg-primary/10 backdrop-blur-xl"
+              className="border-primary text-primary hover:bg-primary/30 hover:text-emerald-500  backdrop-blur-xl"
             >
               Sign In
             </Button>
@@ -115,7 +115,7 @@ export default function Navbar() {
             <Button
               variant="outline"
               onClick={() => router.push("/login")}
-              className="border-primary text-primary hover:bg-primary/10 backdrop-blur-xl w-full"
+              className="border-primary text-primary hover:bg-primary/30 hover:text-emerald-500 backdrop-blur-xl w-full"
             >
               Sign In
             </Button>
