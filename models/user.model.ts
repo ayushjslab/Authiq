@@ -6,6 +6,7 @@ export interface IUser {
   image?: string;
   credit?: number;
   subscription?: string;
+  purchaseTime?: Date;
   websites?: Types.ObjectId[];
   createdAt?: Date;
 }
@@ -25,6 +26,9 @@ const UserSchema = new Schema<IUser>(
       type: String,
       enum: ["free", "pro"],
       default: "free",
+    },
+    purchaseTime:{
+      type: Date
     },
     websites: [
       {

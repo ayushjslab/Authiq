@@ -1,5 +1,6 @@
 import { connectDB } from "@/lib/db";
 import User from "@/models/user.model";
+import Website from "@/models/website.model";
 import { Webhooks } from "@polar-sh/nextjs";
 import { redirect } from "next/navigation";
 
@@ -23,6 +24,7 @@ export const POST = Webhooks({
         userId,
         {
           subscription: "pro",
+          purchaseTime: new Date(),
         },
         { new: true }
       );
@@ -35,6 +37,32 @@ export const POST = Webhooks({
 
   onSubscriptionCanceled: async (payload) => {},
   onSubscriptionRevoked: async (payload) => {
-    // Expired - remove access now
+    try {
+      const userId = payload.data.metadata?.userId;
+
+      if (!userId) {
+        console.error("Missing userId in revoked webhook");
+        return;
+      }
+
+      await connectDB();
+
+      const user = await User.findById(userId).select("websites").lean();
+
+      if (!user?.websites || user.websites.length === 0) return;
+
+      const websitesToExpire = user.websites.slice(0, -3); 
+
+      await Website.updateMany(
+        { _id: { $in: websitesToExpire } },
+        { $set: { isExpired: true } }
+      );
+
+      console.log(
+        `Marked ${websitesToExpire.length} websites as expired for user ${userId}`
+      );
+    } catch (error) {
+      console.error("Error in subscription revoked:", error);
+    }
   },
 });
