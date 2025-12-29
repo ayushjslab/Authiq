@@ -14,7 +14,7 @@ export default function Home() {
       <Navbar />
       <Hero />
       <HowToUse />
-      <section className="flex flex-col md:flex-row items-start md:items-center justify-around p-6 mt-10  rounded-3xl border border-emerald-500 shadow-md lg:mx-20 md:mx-15 mx-10">
+      <section id="sdk" className="flex flex-col md:flex-row items-start md:items-center justify-around p-6 mt-10  rounded-3xl border border-emerald-500 shadow-md lg:mx-20 md:mx-15 mx-10">
         <div className="max-w-md w-full">
           <h1 className="text-3xl font-bold  mb-3">
             Install the Package

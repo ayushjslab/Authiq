@@ -16,8 +16,10 @@ export default function Navbar() {
 
   const navItems = [
     { label: "Reviews", href: "#reviews" },
+    { label: "Map", href: "#roadmap" },
     { label: "Features", href: "#features" },
     { label: "Pricing", href: "#pricing" },
+    { label: "SDK", href: "#sdk" },
     { label: "Docs", href: "/docs" },
   ];
 

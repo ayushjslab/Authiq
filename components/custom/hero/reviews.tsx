@@ -16,7 +16,7 @@ export default function Reviews() {
     {
       name: "Akash Yadav",
       role: "Backend Developer",
-      image: "👨‍💻",
+      image: "https://media.licdn.com/dms/image/v2/D4E03AQE39EkCWSZj5Q/profile-displayphoto-shrink_400_400/B4EZRllWAhHMAg-/0/1736871078035?e=1768435200&v=beta&t=IT4jgRtp5TzEqAgptLygHfPAV7bo68SM5-bu3_IGEJs",
       rating: 5,
       text: "Finally, authentication that doesn't feel like a chore to implement. Authiq is the real deal. 10/10 would recommend.",
       company: "StartupXYZ",

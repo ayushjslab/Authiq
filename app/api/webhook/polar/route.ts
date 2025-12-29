@@ -2,7 +2,6 @@ import { connectDB } from "@/lib/db";
 import User from "@/models/user.model";
 import Website from "@/models/website.model";
 import { Webhooks } from "@polar-sh/nextjs";
-import { redirect } from "next/navigation";
 
 export const POST = Webhooks({
   webhookSecret: process.env.POLAR_WEBHOOK_SECRET!,
@@ -35,7 +34,7 @@ export const POST = Webhooks({
     }
   },
 
-  onSubscriptionCanceled: async (payload) => {},
+  onSubscriptionCanceled: async () => {},
   onSubscriptionRevoked: async (payload) => {
     try {
       const userId = payload.data.metadata?.userId;

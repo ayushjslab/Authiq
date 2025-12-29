@@ -32,7 +32,7 @@ export default function PricingPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-black flex flex-col items-center justify-center p-6 md:p-24 relative overflow-hidden">
+    <main id="pricing" className="min-h-screen bg-black flex flex-col items-center justify-center p-6 md:p-24 relative overflow-hidden">
       {/* Background Glows */}
       <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[120px] -z-10" />
       <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-emerald-600/5 rounded-full blur-[120px] -z-10" />
