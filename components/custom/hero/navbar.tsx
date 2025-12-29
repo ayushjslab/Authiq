@@ -30,7 +30,7 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-3 group">
+        <Link href="/" className="flex items-center gap-1 group">
           <motion.div
             whileHover={{ scale: 1.15, rotate: 10 }}
             transition={{ duration: 0.3 }}
@@ -38,7 +38,7 @@ export default function Navbar() {
           >
             <ShieldHalf className="text-primary-foreground" size={26} />
           </motion.div>
-          <span className="font-extrabold text-2xl tracking-wide text-white group-hover:text-primary transition-colors drop-shadow-[0_0_10px_rgba(220,38,38,0.6)]">
+          <span className="font-semibold text-2xl tracking-wide text-primary transition-colors">
             Authiq
           </span>
         </Link>
