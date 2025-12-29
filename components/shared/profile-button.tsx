@@ -68,7 +68,6 @@ export default function ProfileButton() {
                 <motion.button
                   key={item.label}
                   whileHover={{
-                    backgroundColor: "rgba(220,38,38,0.08)",
                     x: 4,
                   }}
                   onClick={() => {
@@ -76,7 +75,7 @@ export default function ProfileButton() {
                     router.push(item.path);
                   }}
                   className="text-left px-4 py-2 rounded-lg text-sm text-foreground 
-               hover:text-primary transition-colors"
+               hover:text-primary transition-colors cursor-pointer"
                 >
                   {item.label}
                 </motion.button>

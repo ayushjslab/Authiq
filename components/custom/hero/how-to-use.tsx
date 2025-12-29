@@ -1,31 +1,33 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Code2, Zap, Shield, Check } from "lucide-react"
+import { Code2, Zap, Shield, BarChart3 } from "lucide-react"
 
 export default function HowToUse() {
   const steps = [
     {
-      icon: Code2,
-      title: "Install SDK",
+      icon: Shield,
+      title: "Login & Create Project",
       description:
-        "Add Authiq to your project with a single npm command. Works with React, Vue, Angular, and vanilla JS.",
+        "Sign in with Google or GitHub. Create your project and instantly unlock your secure Authiq dashboard.",
     },
     {
-      icon: Shield,
-      title: "Configure Keys",
+      icon: Code2,
+      title: "Add Your Website",
       description:
-        "Get your API keys from the dashboard. Set your redirect URIs and configure your authentication flow.",
+        "Register your website, get a unique Website ID, and connect your app to Authiq in seconds.",
     },
     {
       icon: Zap,
-      title: "Implement Auth",
-      description: "Use our simple hooks or middleware. Three lines of code to add secure authentication to your app.",
+      title: "Install & Authenticate",
+      description:
+        "Install the SDK, drop in your Website ID, and use pre-built hooks for Google & GitHub authentication.",
     },
     {
-      icon: Check,
-      title: "Go Live",
-      description: "Your users can now securely log in. Monitor analytics and manage users from your dashboard.",
+      icon: BarChart3,
+      title: "Analyze & Scale",
+      description:
+        "Track logins, providers, and user activity with real-time analytics built for growth.",
     },
   ]
 
@@ -33,24 +35,29 @@ export default function HowToUse() {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
+      transition: { staggerChildren: 0.15 },
     },
   }
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 30 },
     visible: {
       opacity: 1,
       y: 0,
+      transition: { duration: 0.6, ease: "easeOut" as const },
     },
   }
 
   return (
-    <section id="roadmap" className="py-20 sm:py-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto">
-        {/* Section Header */}
+    <section
+      id="roadmap"
+      className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden bg-black"
+    >
+      {/* Emerald glow background */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.12),transparent_65%)]" />
+
+      <div className="relative max-w-7xl mx-auto">
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -58,16 +65,18 @@ export default function HowToUse() {
           transition={{ duration: 0.6 }}
           className="text-center mb-20"
         >
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground">
-            How to Use{" "}
-            <span className="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">Authiq</span>
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white">
+            How to use{" "}
+            <span className="bg-linear-to-r from-emerald-400 to-emerald-600 bg-clip-text text-transparent">
+              Authiq
+            </span>
           </h2>
-          <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto">
-            Four simple steps to add enterprise-grade authentication to your application.
+          <p className="mt-6 text-lg text-zinc-400 max-w-2xl mx-auto">
+            From zero to secure authentication — beautifully simple.
           </p>
         </motion.div>
 
-        {/* Steps Grid */}
+        {/* Steps */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -79,45 +88,35 @@ export default function HowToUse() {
             const Icon = step.icon
             return (
               <motion.div key={step.title} variants={itemVariants} className="group relative">
-                {/* Card */}
-                <div className="relative h-full p-8 rounded-xl bg-card border border-border hover:border-primary/50 transition-all duration-300">
-                  {/* Number Badge */}
-                  <motion.div
-                    className="absolute -top-4 -right-4 w-12 h-12 bg-primary rounded-full flex items-center justify-center font-bold text-primary-foreground text-lg"
-                    whileHover={{ scale: 1.2, rotate: 360 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    {idx + 1}
-                  </motion.div>
+                <div className="relative h-full rounded-2xl p-px bg-linear-to-br from-emerald-500/40 via-emerald-600/10 to-transparent">
+                  <div className="h-full rounded-2xl bg-zinc-950/80 backdrop-blur-xl p-8 border border-white/5 transition-all duration-300 group-hover:border-emerald-500/40 group-hover:shadow-[0_0_40px_rgba(16,185,129,0.25)]">
+                    {/* Step number */}
+                    <div className="absolute -top-4 -right-4 w-11 h-11 rounded-full bg-emerald-500 text-black font-bold flex items-center justify-center">
+                      {idx + 1}
+                    </div>
 
-                  {/* Icon */}
-                  <motion.div
-                    className="mb-4 w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center"
-                    whileHover={{ rotate: 360, scale: 1.1 }}
-                    transition={{ duration: 0.6 }}
-                  >
-                    <Icon className="text-primary" size={24} />
-                  </motion.div>
+                    {/* Icon */}
+                    <motion.div
+                      whileHover={{ rotate: 360, scale: 1.1 }}
+                      transition={{ duration: 0.6 }}
+                      className="mb-5 w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center"
+                    >
+                      <Icon className="text-emerald-400" size={24} />
+                    </motion.div>
 
-                  {/* Title */}
-                  <h3 className="text-xl font-bold text-foreground mb-3">{step.title}</h3>
-
-                  {/* Description */}
-                  <p className="text-muted-foreground text-sm leading-relaxed">{step.description}</p>
-
-                  {/* Hover effect background */}
-                  <div className="absolute inset-0 bg-linear-to-r from-primary/5 to-secondary/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                    {/* Content */}
+                    <h3 className="text-xl font-semibold text-white mb-3">
+                      {step.title}
+                    </h3>
+                    <p className="text-sm leading-relaxed text-zinc-400">
+                      {step.description}
+                    </p>
+                  </div>
                 </div>
 
-                {/* Connection line */}
+                {/* Connector */}
                 {idx < steps.length - 1 && (
-                  <motion.div
-                    className="hidden lg:block absolute top-1/2 -right-3 w-6 h-0.5 bg-linear-to-r from-primary to-transparent"
-                    initial={{ scaleX: 0 }}
-                    whileInView={{ scaleX: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: idx * 0.2, duration: 0.8 }}
-                  />
+                  <div className="hidden lg:block absolute top-1/2 -right-3 w-6 h-px bg-linear-to-r from-emerald-500 to-transparent" />
                 )}
               </motion.div>
             )
