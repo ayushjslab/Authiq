@@ -23,7 +23,7 @@ const UserSchema = new Schema<IUser>(
     credit: { type: Number, default: 3 },
     subscription: {
       type: String,
-      enum: ["free", "pro", "enterprise"],
+      enum: ["free", "pro"],
       default: "free",
     },
     websites: [
