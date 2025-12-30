@@ -20,12 +20,39 @@ export default function InstallTabs() {
   };
 
   return (
-    <div className="w-full max-w-xl p-3 sm:p-6">
-      <Card className="rounded-2xl sm:rounded-3xl shadow-xl bg-linear-to-br from-emerald-50 to-white border border-emerald-300 backdrop-blur-sm">
-        <CardContent className="p-4 sm:p-6 md:p-8">
-          <h2 className="text-xl sm:text-2xl font-bold text-emerald-800 mb-4 sm:mb-6 text-center tracking-wide">
-            Install Authiq
-          </h2>
+    <div className="w-full max-w-xl p-3 sm:p-6 bg-background">
+      <Card
+        className="relative rounded-2xl sm:rounded-3xl shadow-xl 
+                 bg-linear-to-br from-emerald-50 to-white 
+                 border border-emerald-300 backdrop-blur-sm overflow-hidden"
+      >
+        {/* Subtle glow line */}
+        <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-emerald-400/60 to-transparent" />
+
+        <CardContent className="p-4 sm:p-6 md:p-8 space-y-6">
+          {/* Heading */}
+          <div className="text-center space-y-2">
+            <span
+              className="inline-flex items-center px-3 py-1 rounded-full 
+                       bg-emerald-200/40 text-emerald-700 
+                       text-[10px] font-semibold uppercase tracking-widest"
+            >
+              SDK Installation
+            </span>
+
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+              <span
+                className="bg-linear-to-br from-emerald-700 via-emerald-600 to-emerald-500 
+                         bg-clip-text text-transparent"
+              >
+                Install Authiq
+              </span>
+            </h2>
+
+            <p className="text-sm sm:text-base text-emerald-700/80">
+              Start authenticating users in minutes with a single install
+            </p>
+          </div>
 
           <Tabs defaultValue="npm" className="w-full">
             <TabsList className="bg-emerald-200/40 rounded-xl sm:rounded-2xl p-1.5 sm:p-2 shadow-inner backdrop-blur-md flex items-center justify-center gap-1">

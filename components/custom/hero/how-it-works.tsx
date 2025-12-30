@@ -62,7 +62,7 @@ export function HowItWorks() {
   ];
 
   return (
-    <div className="bg-background mt-10">
+    <div id="features" className="bg-background mt-10">
       {/* Hero Section */}
       <section className="relative pt-20 pb-10 overflow-hidden">
         {/* Ambient Glow */}

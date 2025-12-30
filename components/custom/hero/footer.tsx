@@ -4,6 +4,7 @@ import { motion } from "framer-motion"
 import Link from "next/link"
 import { Mail, Github, Linkedin, Twitter, ShieldHalf, Instagram } from "lucide-react"
 import { FaXTwitter } from "react-icons/fa6";
+import { useRouter } from "next/navigation";
 export default function Footer() {
   const currentYear = new Date().getFullYear()
 
@@ -38,6 +39,8 @@ export default function Footer() {
     { icon: Instagram, label: "Instagram", href: "https://www.instagram.com/ayushjslab" },
   ]
 
+  const router = useRouter();
+
   return (
     <footer className="relative border-t border-border bg-background/50 backdrop-blur">
       <motion.div
@@ -62,6 +65,7 @@ export default function Footer() {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
+            onClick={() => router.push("/dashboard")}
             className="px-8 py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-colors"
           >
             Get Started Free

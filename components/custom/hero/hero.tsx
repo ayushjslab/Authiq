@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Zap, ShieldCheck } from "lucide-react";
+import { ArrowRight, ShieldCheck } from "lucide-react";
 import { redirect } from "next/navigation";
 
 export default function Hero() {
@@ -27,11 +27,8 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden pt-10">
-      <div className="absolute inset-0 blur-[160px] opacity-30">
-        <div className="absolute top-10 left-20 w-96 h-96 bg-primary/30 rounded-full" />
-        <div className="absolute bottom-10 right-20 w-[500px] h-[500px] bg-secondary/20 rounded-full" />
-      </div>
+    <section className="relative min-h-screen flex items-center overflow-hidden pt-10 bg-background">
+      
 
       <motion.div
         variants={containerVariants}
@@ -88,14 +85,7 @@ export default function Hero() {
               </motion.div>
             </Button>
 
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-primary text-primary hover:bg-primary/10 flex items-center gap-2"
-            >
-              <Zap size={18} />
-              Live Demo
-            </Button>
+           
           </motion.div>
 
           <motion.div

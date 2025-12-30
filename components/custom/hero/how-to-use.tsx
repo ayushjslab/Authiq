@@ -51,11 +51,9 @@ export default function HowToUse() {
   return (
     <section
       id="roadmap"
-      className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden bg-black"
+      className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden bg-background"
     >
-      {/* Emerald glow background */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.12),transparent_65%)]" />
-
+    
       <div className="relative max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
