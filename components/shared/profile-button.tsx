@@ -62,8 +62,8 @@ export default function ProfileButton() {
             <div className="p-2 flex flex-col">
               {[
                 { label: "Dashboard", path: "/dashboard" },
-                { label: "Settings", path: "/settings" },
-                { label: "Billing", path: "/billing" },
+                { label: "Settings", path: "/dashboard/settings" },
+                { label: "Billing", path: "/dashboard/billing" },
               ].map((item) => (
                 <motion.button
                   key={item.label}

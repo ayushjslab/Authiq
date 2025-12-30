@@ -26,7 +26,7 @@ const UserSchema = new Schema<IUser>(
       type: String,
       enum: ["free", "pro"],
       default: "free",
-    },
+    },  
     purchaseTime:{
       type: Date
     },
