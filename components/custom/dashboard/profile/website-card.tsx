@@ -348,7 +348,8 @@ export function WebsiteCard({ website }: { website: Website }) {
               href={website.websiteUrl}
               target="_blank"
               rel="noreferrer"
-              className="text-sm font-mono text-emerald-400 hover:underline break-all"
+              className="block max-w-[260px] truncate text-sm font-mono text-emerald-400 hover:underline"
+              title={website.websiteUrl}
             >
               {website.websiteUrl}
             </a>

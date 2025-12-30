@@ -7,11 +7,12 @@ import Reviews from "@/components/custom/hero/reviews";
 import Footer from "@/components/custom/hero/footer";
 import PricingPage from "@/components/custom/hero/pricing-page";
 import InstallTabs from "@/components/custom/hero/install-sdk";
+import { HowItWorks } from "@/components/custom/hero/how-it-works";
 
 export default function Home() {
   
   return (
-    <main className="min-h-screen bg-black">
+    <main className="min-h-screen">
       <Navbar />
       <Hero />
       <HowToUse />
@@ -29,6 +30,7 @@ export default function Home() {
 
         <InstallTabs />
       </section>
+      <HowItWorks/>
       <PricingPage />
       <Reviews />
       <Footer />

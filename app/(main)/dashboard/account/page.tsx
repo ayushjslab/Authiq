@@ -57,7 +57,7 @@ export default function AccountPage() {
   }
 
   return (
-    <div className="bg-black text-white font-sans selection:bg-emerald-500/30">
+    <div className=" text-white font-sans selection:bg-emerald-500/30">
       <main className="max-w-4xl mx-auto px-6 py-15">
         <motion.div
           initial="hidden"
