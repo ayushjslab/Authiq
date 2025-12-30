@@ -177,10 +177,7 @@ export default function AnalyticsDashboard() {
     shadow-[0_10px_40px_-20px_rgba(16,185,129,0.35)]
   "
       >
-        {/* Ambient Glow */}
-        <div className="absolute inset-0 -z-10 flex justify-center">
-          <div className="w-[420px] h-[120px] bg-emerald-500/20 blur-[100px]" />
-        </div>
+       
 
         <div className="container mx-auto px-6 py-7">
           <div className="flex items-center justify-between">
@@ -296,7 +293,7 @@ export default function AnalyticsDashboard() {
       "
             >
               {/* Ambient glow */}
-              <div className="absolute inset-0 bg-linear-to-br from-emerald-500/10 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-card/50" />
 
               <CardHeader className="relative z-10 space-y-1">
                 <CardTitle className="text-xl font-bold">
@@ -393,7 +390,7 @@ export default function AnalyticsDashboard() {
         bg-card/60 backdrop-blur-2xl
       "
             >
-              <div className="absolute inset-0 bg-linear-to-br from-emerald-500/10 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-card/50" />
 
               <CardHeader className="relative z-10 space-y-1">
                 <CardTitle className="text-xl font-bold">
@@ -466,7 +463,7 @@ export default function AnalyticsDashboard() {
     "
             >
               {/* subtle glow */}
-              <div className="absolute inset-0 bg-linear-to-br from-emerald-500/10 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-card/50" />
 
               <CardHeader className="relative z-10">
                 <div className="flex items-center justify-between gap-4">

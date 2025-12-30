@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import {
   Plus,
   BarChart3,
@@ -8,6 +9,7 @@ import {
   User,
   CreditCard,
   Palette,
+  ShieldHalf,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -19,7 +21,7 @@ export default function Sidebar() {
   const router = useRouter();
 
   const menuItems = [
-    { icon: LuLayoutDashboard , label: "Dashboard", slug: "/dashboard" },
+    { icon: LuLayoutDashboard, label: "Dashboard", slug: "/dashboard" },
     { icon: Plus, label: "Add website", slug: "/dashboard/add-website" },
     { icon: BarChart3, label: "Analysis", slug: "/dashboard/analysis" },
     { icon: User, label: "Account", slug: "/dashboard/account" },
@@ -39,16 +41,20 @@ export default function Sidebar() {
         }`}
       >
         <div className="flex items-center justify-between p-4 border-b border-emerald-100/20">
-          <div
-            className={`overflow-hidden transition-all duration-500 cursor-pointer ${
+          <Link href="/" className={`flex items-center gap-1 group overflow-hidden transition-all duration-500 cursor-pointer ${
               isOpen ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-2"
-            }`}
-            onClick={() => router.push("/")}
-          >
-            <h1 className="text-2xl font-extrabold text-emerald-500 whitespace-nowrap tracking-tight">
+            }`}>
+            <motion.div
+              whileHover={{ scale: 1.15, rotate: 10 }}
+              transition={{ duration: 0.3 }}
+              className="p-2 rounded-xl glass-ruby ruby-shimmer"
+            >
+              <ShieldHalf className="text-primary-foreground" size={26} />
+            </motion.div>
+            <span className="font-semibold text-2xl tracking-wide text-primary transition-colors">
               Authiq
-            </h1>
-          </div>
+            </span>
+          </Link>
 
           <div className="shrink-0 text-emerald-600 cursor-pointer hover:text-emerald-700 transition-colors mr-2">
             {!isOpen && (
