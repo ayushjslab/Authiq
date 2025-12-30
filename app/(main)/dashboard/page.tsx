@@ -1,7 +1,27 @@
+"use client"
 import { MetricsGrid } from "@/components/custom/dashboard/metrics-grid";
 import { WebsiteTable } from "@/components/custom/dashboard/website-table";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { useSession } from "next-auth/react";
 
 export default function DashboardPage() {
+  const { data: session } = useSession();
+  
+    const { data: metricsData, isLoading } = useQuery({
+      queryKey: ["metricsData"],
+      queryFn: async () => {
+        return await axios.get(`/api/metrics?userId=${session?.user?.id}`);
+      },
+      enabled: !!session?.user?.id,
+      staleTime: 20 * 1000,
+    });
+  
+    console.log(metricsData?.data);
+  
+    if (isLoading) {
+      return <p>Loading...</p>;
+    }
   return (
     <div className="min-h-screen">
       <main className="flex-1 overflow-y-auto">
@@ -17,7 +37,7 @@ export default function DashboardPage() {
           </header>
 
           <section className="rounded-2xl border bg-card shadow-sm p-6">
-            <MetricsGrid />
+            <MetricsGrid metricsData={metricsData} />
           </section>
 
           <section className="rounded-2xl border bg-card shadow-sm p-6">
@@ -27,7 +47,7 @@ export default function DashboardPage() {
                 Overview of all connected websites and their status.
               </p>
             </div>
-            <WebsiteTable />
+            <WebsiteTable metricsData={metricsData}/>
           </section>
 
         </div>

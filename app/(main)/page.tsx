@@ -9,6 +9,7 @@ import PricingPage from "@/components/custom/hero/pricing-page";
 import InstallTabs from "@/components/custom/hero/install-sdk";
 
 export default function Home() {
+  
   return (
     <main className="min-h-screen bg-black">
       <Navbar />

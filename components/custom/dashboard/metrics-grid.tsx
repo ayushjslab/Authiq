@@ -3,33 +3,11 @@
 import { motion } from "framer-motion";
 import { CreditCard, Globe, Zap, Crown } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useSession } from "next-auth/react";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { GiInfinity } from "react-icons/gi";
 
-export function MetricsGrid() {
-  const { data: session } = useSession();
-
-  const { data: metricsData, isLoading } = useQuery({
-    queryKey: ["metricsData"],
-    queryFn: async () => {
-      return await axios.get(`/api/metrics?userId=${session?.user?.id}`);
-    },
-    enabled: !!session?.user?.id,
-    staleTime: 20 * 1000,
-  });
-
-  console.log(metricsData?.data);
-
-  if (isLoading) {
-    return <p>Loading...</p>;
-  }
-
+export function MetricsGrid({metricsData}:{metricsData: any}) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-     
-
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

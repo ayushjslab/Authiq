@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { MoreHorizontal, ExternalLink, Users, TrendingUp } from "lucide-react"
+import { Users, TrendingUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
@@ -36,7 +36,7 @@ const websites = [
   },
 ]
 
-export function WebsiteTable() {
+export function WebsiteTable({metricsData}:{metricsData: any}) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
